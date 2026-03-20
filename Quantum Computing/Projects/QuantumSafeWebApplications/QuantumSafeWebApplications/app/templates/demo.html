@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+
+{% block title %}Interactive Demo - Quantum-Safe Crypto{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="mb-4">
+                <i class="bi bi-play-circle text-primary"></i>
+                Interactive Quantum-Safe Crypto Demo
+            </h1>
+            <p class="lead text-muted mb-5">
+                Experience post-quantum cryptography in action. Try different algorithms and see how they work.
+            </p>
+        </div>
+    </div>
+
+    <!-- Key Encapsulation Demo -->
+    <div class="row mb-5">
+        <div class="col-lg-12">
+            <div class="card card-quantum">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-key text-primary"></i> Key Encapsulation Mechanism (KEM) Demo
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="kemAlgorithm" class="form-label">Select KEM Algorithm:</label>
+                            <select id="kemAlgorithm" class="form-select mb-3">
+                                <option value="Kyber512">Kyber512 (Recommended)</option>
+                                <option value="Kyber768">Kyber768</option>
+                                <option value="Kyber1024">Kyber1024</option>
+                            </select>
+                            <button id="runKemDemo" class="btn btn-primary">
+                                <i class="bi bi-play"></i> Run KEM Demo
+                            </button>
+                        </div>
+                        <div class="col-md-8">
+                            <div id="kemResults" class="d-none">
+                                <h6>Results:</h6>
+                                <div class="crypto-output" id="kemOutput"></div>
+                            </div>
+                            <div id="kemLoading" class="d-none text-center py-3">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <p class="mt-2">Running KEM demonstration...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Digital Signature Demo -->
+    <div class="row mb-5">
+        <div class="col-lg-12">
+            <div class="card card-quantum">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-pen text-success"></i> Digital Signature Demo
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="sigAlgorithm" class="form-label">Select Signature Algorithm:</label>
+                            <select id="sigAlgorithm" class="form-select mb-3">
+                                <option value="Dilithium2">Dilithium2 (Recommended)</option>
+                                <option value="Dilithium3">Dilithium3</option>
+                                <option value="Dilithium5">Dilithium5</option>
+                                <option value="Falcon-512">Falcon-512</option>
+                                <option value="Falcon-1024">Falcon-1024</option>
+                            </select>
+                            <div class="mb-3">
+                                <label for="signatureMessage" class="form-label">Message to Sign:</label>
+                                <textarea id="signatureMessage" class="form-control" rows="3" 
+                                    placeholder="Enter your message here...">Hello, this is a quantum-safe digital signature demonstration!</textarea>
+                            </div>
+                            <button id="runSigDemo" class="btn btn-success">
+                                <i class="bi bi-pen"></i> Run Signature Demo
+                            </button>
+                        </div>
+                        <div class="col-md-8">
+                            <div id="sigResults" class="d-none">
+                                <h6>Results:</h6>
+                                <div class="crypto-output" id="sigOutput"></div>
+                            </div>
+                            <div id="sigLoading" class="d-none text-center py-3">
+                                <div class="spinner-border text-success" role="status"></div>
+                                <p class="mt-2">Running signature demonstration...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Generation Demo -->
+    <div class="row mb-5">
+        <div class="col-lg-12">
+            <div class="card card-quantum">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-gear text-warning"></i> Key Pair Generation
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="keyKemAlgorithm" class="form-label">KEM Algorithm for Key Generation:</label>
+                            <select id="keyKemAlgorithm" class="form-select mb-3">
+                                <option value="Kyber512">Kyber512</option>
+                                <option value="Kyber768">Kyber768</option>
+                                <option value="Kyber1024">Kyber1024</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="keySigAlgorithm" class="form-label">Signature Algorithm for Key Generation:</label>
+                            <select id="keySigAlgorithm" class="form-select mb-3">
+                                <option value="Dilithium2">Dilithium2</option>
+                                <option value="Dilithium3">Dilithium3</option>
+                                <option value="Falcon-512">Falcon-512</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button id="generateKeys" class="btn btn-warning">
+                        <i class="bi bi-key"></i> Generate Key Pairs
+                    </button>
+                    <div id="keyResults" class="d-none mt-3">
+                        <h6>Generated Keys:</h6>
+                        <div class="crypto-output" id="keyOutput"></div>
+                    </div>
+                    <div id="keyLoading" class="d-none text-center py-3">
+                        <div class="spinner-border text-warning" role="status"></div>
+                        <p class="mt-2">Generating quantum-safe key pairs...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // KEM Demo
+    document.getElementById('runKemDemo').addEventListener('click', async function() {
+        const algorithm = document.getElementById('kemAlgorithm').value;
+        const resultsDiv = document.getElementById('kemResults');
+        const outputDiv = document.getElementById('kemOutput');
+        const loadingDiv = document.getElementById('kemLoading');
+        
+        // Show loading
+        resultsDiv.classList.add('d-none');
+        loadingDiv.classList.remove('d-none');
+        
+        try {
+            const result = await apiCall('/api/demo/kem', { algorithm }, 'POST');
+            
+            if (result.error) {
+                throw new Error(result.error);
+            }
+            
+            outputDiv.innerHTML = `
+                <strong>Algorithm:</strong> ${result.algorithm}<br>
+                <strong>Success:</strong> <span class="badge ${result.success ? 'bg-success' : 'bg-danger'}">${result.success ? 'Yes' : 'No'}</span><br>
+                <strong>Public Key Size:</strong> ${formatBytes(result.public_key_size)}<br>
+                <strong>Ciphertext Size:</strong> ${formatBytes(result.ciphertext_size)}<br>
+                <strong>Shared Secret Size:</strong> ${formatBytes(result.shared_secret_size)}<br>
+                <strong>Public Key (preview):</strong> ${result.public_key}<br>
+                <strong>Ciphertext (preview):</strong> ${result.ciphertext}<br>
+                <strong>Shared Secret (preview):</strong> ${result.shared_secret}
+            `;
+            
+            loadingDiv.classList.add('d-none');
+            resultsDiv.classList.remove('d-none');
+            
+        } catch (error) {
+            outputDiv.innerHTML = `<span class="text-danger">Error: ${error.message}</span>`;
+            loadingDiv.classList.add('d-none');
+            resultsDiv.classList.remove('d-none');
+        }
+    });
+
+    // Signature Demo
+    document.getElementById('runSigDemo').addEventListener('click', async function() {
+        const algorithm = document.getElementById('sigAlgorithm').value;
+        const resultsDiv = document.getElementById('sigResults');
+        const outputDiv = document.getElementById('sigOutput');
+        const loadingDiv = document.getElementById('sigLoading');
+        
+        // Show loading
+        resultsDiv.classList.add('d-none');
+        loadingDiv.classList.remove('d-none');
+        
+        try {
+            const result = await apiCall('/api/demo/signature', { algorithm }, 'POST');
+            
+            if (result.error) {
+                throw new Error(result.error);
+            }
+            
+            outputDiv.innerHTML = `
+                <strong>Algorithm:</strong> ${result.algorithm}<br>
+                <strong>Message:</strong> "${result.message}"<br>
+                <strong>Signature Valid:</strong> <span class="badge ${result.signature_valid ? 'bg-success' : 'bg-danger'}">${result.signature_valid ? 'Yes' : 'No'}</span><br>
+                <strong>Public Key Size:</strong> ${formatBytes(result.public_key_size)}<br>
+                <strong>Signature Size:</strong> ${formatBytes(result.signature_size)}<br>
+                <strong>Public Key (preview):</strong> ${result.public_key}<br>
+                <strong>Signature (preview):</strong> ${result.signature}
+            `;
+            
+            loadingDiv.classList.add('d-none');
+            resultsDiv.classList.remove('d-none');
+            
+        } catch (error) {
+            outputDiv.innerHTML = `<span class="text-danger">Error: ${error.message}</span>`;
+            loadingDiv.classList.add('d-none');
+            resultsDiv.classList.remove('d-none');
+        }
+    });
+
+    // Key Generation Demo
+    document.getElementById('generateKeys').addEventListener('click', async function() {
+        const kemAlgorithm = document.getElementById('keyKemAlgorithm').value;
+        const sigAlgorithm = document.getElementById('keySigAlgorithm').value;
+        const resultsDiv = document.getElementById('keyResults');
+        const outputDiv = document.getElementById('keyOutput');
+        const loadingDiv = document.getElementById('keyLoading');
+        
+        // Show loading
+        resultsDiv.classList.add('d-none');
+        loadingDiv.classList.remove('d-none');
+        
+        try {
+            const result = await apiCall('/api/generate-keys', { 
+                kem_algorithm: kemAlgorithm,
+                sig_algorithm: sigAlgorithm 
+            }, 'POST');
+            
+            if (result.error) {
+                throw new Error(result.error);
+            }
+            
+            outputDiv.innerHTML = `
+                <strong>Success:</strong> <span class="badge bg-success">Generated</span><br>
+                <strong>KEM Algorithm:</strong> ${result.kem_algorithm}<br>
+                <strong>Signature Algorithm:</strong> ${result.sig_algorithm}<br>
+                <strong>KEM Public Key Size:</strong> ${formatBytes(result.kem_public_key_size)}<br>
+                <strong>Signature Public Key Size:</strong> ${formatBytes(result.sig_public_key_size)}<br>
+                <strong>Timestamp:</strong> ${new Date(result.timestamp).toLocaleString()}
+            `;
+            
+            loadingDiv.classList.add('d-none');
+            resultsDiv.classList.remove('d-none');
+            
+        } catch (error) {
+            outputDiv.innerHTML = `<span class="text-danger">Error: ${error.message}</span>`;
+            loadingDiv.classList.add('d-none');
+            resultsDiv.classList.remove('d-none');
+        }
+    });
+});
+</script>
+{% endblock %}

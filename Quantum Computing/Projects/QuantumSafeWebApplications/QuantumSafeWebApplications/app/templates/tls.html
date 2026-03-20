@@ -1,0 +1,496 @@
+{% extends "base.html" %}
+
+{% block title %}Post-Quantum TLS - Secure Transport Layer{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="mb-4">
+                <i class="bi bi-shield-lock text-success"></i>
+                Post-Quantum TLS Transport Security
+            </h1>
+            <p class="lead text-muted mb-5">
+                Demonstrate quantum-resistant Transport Layer Security using post-quantum cryptographic algorithms.
+                This implementation provides security against both classical and quantum computing threats.
+            </p>
+        </div>
+    </div>
+
+    <!-- TLS Configuration Information -->
+    <div class="row mb-5">
+        <div class="col-lg-12">
+            <div class="card card-quantum">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-info-circle text-info"></i> Post-Quantum TLS Configuration
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row" id="tls-config">
+                        <div class="col-md-6">
+                            <h6><i class="bi bi-key"></i> Key Exchange Mechanism (KEM)</h6>
+                            <div id="tls-kem" class="mb-3">
+                                <div class="spinner-border spinner-border-sm" role="status"></div>
+                                Loading TLS configuration...
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="bi bi-pen"></i> Digital Signature Algorithm</h6>
+                            <div id="tls-signature" class="mb-3">
+                                <div class="spinner-border spinner-border-sm" role="status"></div>
+                                Loading TLS configuration...
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3" id="tls-certificates">
+                        <div class="col-12">
+                            <h6><i class="bi bi-award"></i> Post-Quantum Certificates</h6>
+                            <div id="cert-list" class="mb-3">
+                                <div class="spinner-border spinner-border-sm" role="status"></div>
+                                Loading certificates...
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <button id="refresh-tls-info" class="btn btn-outline-info btn-sm">
+                                <i class="bi bi-arrow-clockwise"></i> Refresh Configuration
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TLS Handshake Demo -->
+    <div class="row mb-5">
+        <div class="col-lg-12">
+            <div class="card card-quantum">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-arrow-left-right text-primary"></i> Post-Quantum TLS Handshake Demo
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="handshakeRole" class="form-label">Handshake Role:</label>
+                                <select id="handshakeRole" class="form-select">
+                                    <option value="client">Client (Initiate Handshake)</option>
+                                    <option value="server">Server (Respond to Handshake)</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="publicKeyInput" class="form-label">Peer Public Key (for demonstration):</label>
+                                <textarea id="publicKeyInput" class="form-control font-monospace" rows="3" 
+                                    placeholder="Enter base64-encoded public key or click 'Generate Demo Key' for testing..."></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <button id="generateDemoKey" class="btn btn-outline-secondary btn-sm me-2">
+                                    <i class="bi bi-key"></i> Generate Demo Key
+                                </button>
+                                <button id="performHandshake" class="btn btn-primary me-2">
+                                    <i class="bi bi-arrow-left-right"></i> Perform TLS Handshake
+                                </button>
+                                <button id="resetTlsDemo" class="btn btn-outline-danger btn-sm">
+                                    <i class="bi bi-arrow-clockwise"></i> Reset Demo
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="bi bi-shield-check"></i> Quantum-Safe Features
+                                    </h6>
+                                    <ul class="list-unstyled mb-0">
+                                        <li><i class="bi bi-check text-success"></i> Post-Quantum KEMs</li>
+                                        <li><i class="bi bi-check text-success"></i> Quantum-Resistant Signatures</li>
+                                        <li><i class="bi bi-check text-success"></i> Perfect Forward Secrecy</li>
+                                        <li><i class="bi bi-check text-success"></i> Hybrid Classical+PQ Security</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="handshakeResult" class="d-none mt-3">
+                        <h6>Handshake Result:</h6>
+                        <div class="crypto-output" id="handshakeOutput"></div>
+                    </div>
+                    
+                    <div id="handshakeLoading" class="d-none text-center py-3">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="mt-2">Performing post-quantum handshake...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TLS Message Encryption Demo -->
+    <div class="row mb-5">
+        <div class="col-lg-12">
+            <div class="card card-quantum">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-lock text-warning"></i> TLS Message Encryption Demo
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="tlsMessage" class="form-label">Message to Encrypt:</label>
+                        <textarea id="tlsMessage" class="form-control" rows="3" 
+                            placeholder="Enter your message to encrypt using post-quantum TLS...">This message is encrypted using post-quantum TLS with quantum-resistant algorithms!</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tlsSessionId" class="form-label">TLS Session ID (from handshake):</label>
+                        <input id="tlsSessionId" class="form-control font-monospace" 
+                            placeholder="Session ID will be filled automatically after handshake..." readonly>
+                    </div>
+                    <div class="mb-3">
+                        <button id="encryptTlsMessage" class="btn btn-warning me-2" disabled>
+                            <i class="bi bi-lock"></i> Encrypt Message
+                        </button>
+                        <button id="decryptTlsMessage" class="btn btn-success" disabled>
+                            <i class="bi bi-unlock"></i> Decrypt Message
+                        </button>
+                    </div>
+                    
+                    <div id="tlsEncryptResult" class="d-none mt-3">
+                        <h6>Encryption Result:</h6>
+                        <div class="crypto-output" id="tlsEncryptOutput"></div>
+                    </div>
+                    
+                    <div id="tlsDecryptResult" class="d-none mt-3">
+                        <h6>Decryption Result:</h6>
+                        <div class="crypto-output" id="tlsDecryptOutput"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active TLS Sessions -->
+    <div class="row mb-5">
+        <div class="col-lg-12">
+            <div class="card card-quantum">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-list-ul text-secondary"></i> Active TLS Sessions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="tls-sessions-list">
+                        <p class="text-muted">No active TLS sessions</p>
+                    </div>
+                    <button id="refreshSessions" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-arrow-clockwise"></i> Refresh Sessions
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentSession = null;
+let encryptedData = null;
+
+// Helper function to reset UI state
+function resetTlsUI() {
+    // Clear session data
+    currentSession = null;
+    encryptedData = null;
+    
+    // Reset form fields
+    document.getElementById('tlsSessionId').value = '';
+    
+    // Disable buttons
+    document.getElementById('encryptTlsMessage').disabled = true;
+    document.getElementById('decryptTlsMessage').disabled = true;
+    
+    // Hide result sections
+    document.getElementById('handshakeResult').classList.add('d-none');
+    document.getElementById('tlsEncryptResult').classList.add('d-none');
+    document.getElementById('tlsDecryptResult').classList.add('d-none');
+}
+
+// Load TLS configuration information
+async function loadTlsInfo() {
+    try {
+        const response = await apiCall('/api/tls/info');
+        
+        if (response.error) {
+            throw new Error(response.error);
+        }
+
+        // Update KEM information
+        const kemDiv = document.getElementById('tls-kem');
+        kemDiv.innerHTML = `
+            <span class="badge bg-primary">${response.active_kem}</span>
+            <small class="text-muted d-block">Mode: ${response.post_quantum_mode}</small>
+            <small class="text-muted">Available: ${response.algorithms.key_exchange_mechanisms.join(', ')}</small>
+        `;
+
+        // Update signature information
+        const sigDiv = document.getElementById('tls-signature');
+        sigDiv.innerHTML = `
+            <span class="badge bg-success">${response.active_signature}</span>
+            <small class="text-muted d-block">Available: ${response.algorithms.digital_signatures.slice(0, 3).join(', ')}</small>
+        `;
+
+        // Update certificates
+        const certDiv = document.getElementById('cert-list');
+        if (response.certificates && response.certificates.length > 0) {
+            let certHtml = '';
+            response.certificates.forEach(cert => {
+                certHtml += `
+                    <div class="mb-2 p-2 border rounded">
+                        <strong>${cert.domain}</strong> - ${cert.algorithm}<br>
+                        <small class="text-muted">Created: ${new Date(cert.created_at).toLocaleString()}</small>
+                    </div>
+                `;
+            });
+            certDiv.innerHTML = certHtml;
+        } else {
+            certDiv.innerHTML = '<p class="text-muted">No certificates available</p>';
+        }
+
+    } catch (error) {
+        console.error('Failed to load TLS info:', error);
+        document.getElementById('tls-kem').innerHTML = '<span class="text-danger">Error loading configuration</span>';
+        document.getElementById('tls-signature').innerHTML = '<span class="text-danger">Error loading configuration</span>';
+    }
+}
+
+// Generate demo public key for testing
+async function generateDemoKey() {
+    const demoKey = btoa(Math.random().toString(36).substr(2, 16) + Math.random().toString(36).substr(2, 16));
+    document.getElementById('publicKeyInput').value = demoKey;
+}
+
+// Perform TLS handshake
+async function performTlsHandshake() {
+    const publicKey = document.getElementById('publicKeyInput').value.trim();
+    const role = document.getElementById('handshakeRole').value;
+    
+    if (!publicKey) {
+        alert('Please enter a public key or generate a demo key');
+        return;
+    }
+    
+    const resultsDiv = document.getElementById('handshakeResult');
+    const outputDiv = document.getElementById('handshakeOutput');
+    const loadingDiv = document.getElementById('handshakeLoading');
+    
+    // Show loading
+    resultsDiv.classList.add('d-none');
+    loadingDiv.classList.remove('d-none');
+    
+    try {
+        const response = await apiCall('/api/tls/handshake', {
+            public_key: publicKey,
+            role: role
+        }, 'POST');
+        
+        if (response.error) {
+            throw new Error(response.error);
+        }
+        
+        currentSession = response.handshake_result;
+        
+        outputDiv.innerHTML = `
+            <strong>Handshake completed successfully!</strong><br>
+            <strong>Session ID:</strong> <code>${currentSession.session_id}</code><br>
+            <strong>Role:</strong> ${currentSession.role}<br>
+            <strong>KEM Algorithm:</strong> ${currentSession.kem_algorithm}<br>
+            <strong>Signature Algorithm:</strong> ${currentSession.sig_algorithm}<br>
+            <strong>Shared Secret:</strong> <small class="font-monospace">${currentSession.shared_secret.substring(0, 32)}...</small><br>
+            <strong>Timestamp:</strong> ${new Date(currentSession.timestamp).toLocaleString()}
+        `;
+        
+        // Enable encryption button and fill session ID
+        document.getElementById('tlsSessionId').value = currentSession.session_id;
+        document.getElementById('encryptTlsMessage').disabled = false;
+        // Keep decrypt button disabled until we have encrypted data
+        document.getElementById('decryptTlsMessage').disabled = true;
+        
+        loadingDiv.classList.add('d-none');
+        resultsDiv.classList.remove('d-none');
+        
+        // Refresh sessions list
+        setTimeout(loadTlsSessions, 1000);
+        
+    } catch (error) {
+        outputDiv.innerHTML = `<span class="text-danger">Error: ${error.message}</span>`;
+        loadingDiv.classList.add('d-none');
+        resultsDiv.classList.remove('d-none');
+    }
+}
+
+// Encrypt TLS message
+async function encryptTlsMessage() {
+    const message = document.getElementById('tlsMessage').value.trim();
+    const sessionId = document.getElementById('tlsSessionId').value;
+    
+    console.log('Encrypt function called with:', { message, sessionId });
+    
+    if (!message) {
+        alert('Please enter a message to encrypt');
+        return;
+    }
+    
+    if (!sessionId) {
+        alert('Please perform a handshake first');
+        return;
+    }
+    
+    try {
+        console.log('Making API call to /api/tls/encrypt');
+        const response = await apiCall('/api/tls/encrypt', {
+            message: message,
+            session_id: sessionId
+        }, 'POST');
+        
+        console.log('API response:', response);
+        
+        if (response.error) {
+            throw new Error(response.error);
+        }
+        
+        encryptedData = response.encrypted_data;
+        console.log('Encryption successful:', encryptedData);
+        
+        const outputDiv = document.getElementById('tlsEncryptOutput');
+        outputDiv.innerHTML = `
+            <strong>Message encrypted successfully!</strong><br>
+            <strong>Algorithm:</strong> ${encryptedData.algorithm}<br>
+            <strong>Key Derivation:</strong> ${encryptedData.key_derivation}<br>
+            <strong>Encrypted Data:</strong> <small class="font-monospace">${encryptedData.encrypted_message.substring(0, 64)}...</small><br>
+            <strong>Nonce:</strong> <small class="font-monospace">${encryptedData.nonce}</small><br>
+            <strong>Auth Tag:</strong> <small class="font-monospace">${encryptedData.auth_tag}</small>
+        `;
+        
+        document.getElementById('tlsEncryptResult').classList.remove('d-none');
+        document.getElementById('decryptTlsMessage').disabled = false;
+        
+    } catch (error) {
+        console.error('Encryption error:', error);
+        const outputDiv = document.getElementById('tlsEncryptOutput');
+        outputDiv.innerHTML = `<span class="text-danger">Error: ${error.message}</span>`;
+        document.getElementById('tlsEncryptResult').classList.remove('d-none');
+    }
+}
+
+// Decrypt TLS message
+async function decryptTlsMessage() {
+    const sessionId = document.getElementById('tlsSessionId').value;
+    
+    if (!encryptedData) {
+        alert('Please encrypt a message first');
+        return;
+    }
+    
+    try {
+        const response = await apiCall('/api/tls/decrypt', {
+            encrypted_data: encryptedData,
+            session_id: sessionId
+        }, 'POST');
+        
+        if (response.error) {
+            throw new Error(response.error);
+        }
+        
+        const outputDiv = document.getElementById('tlsDecryptOutput');
+        outputDiv.innerHTML = `
+            <strong>Message decrypted successfully!</strong><br>
+            <strong>Decrypted Message:</strong> "${response.decrypted_message}"<br>
+            <strong>Session ID:</strong> ${response.session_id}<br>
+            <strong>Timestamp:</strong> ${new Date(response.timestamp).toLocaleString()}
+        `;
+        
+        document.getElementById('tlsDecryptResult').classList.remove('d-none');
+        
+    } catch (error) {
+        const outputDiv = document.getElementById('tlsDecryptOutput');
+        outputDiv.innerHTML = `<span class="text-danger">Error: ${error.message}</span>`;
+        document.getElementById('tlsDecryptResult').classList.remove('d-none');
+    }
+}
+
+// Load active TLS sessions
+async function loadTlsSessions() {
+    try {
+        const response = await apiCall('/api/tls/sessions');
+        
+        const sessionsDiv = document.getElementById('tls-sessions-list');
+        
+        if (response.success && response.sessions.length > 0) {
+            let sessionsHtml = `<p><strong>${response.active_sessions} active sessions:</strong></p>`;
+            
+            response.sessions.forEach(session => {
+                sessionsHtml += `
+                    <div class="mb-2 p-2 border rounded">
+                        <strong>Session:</strong> <code>${session.session_id}</code><br>
+                        <strong>Role:</strong> ${session.role} | 
+                        <strong>KEM:</strong> ${session.kem_algorithm}<br>
+                        <strong>Created:</strong> ${new Date(session.created_at).toLocaleString()} | 
+                        <strong>Last Used:</strong> ${new Date(session.last_used).toLocaleString()}
+                    </div>
+                `;
+            });
+            
+            sessionsDiv.innerHTML = sessionsHtml;
+        } else {
+            sessionsDiv.innerHTML = '<p class="text-muted">No active TLS sessions</p>';
+        }
+        
+    } catch (error) {
+        console.error('Failed to load TLS sessions:', error);
+        document.getElementById('tls-sessions-list').innerHTML = 
+            '<span class="text-danger">Error loading sessions</span>';
+    }
+}
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize button states
+    document.getElementById('encryptTlsMessage').disabled = true;
+    document.getElementById('decryptTlsMessage').disabled = true;
+    
+    // Load initial TLS configuration
+    loadTlsInfo();
+    
+    // Load initial sessions
+    loadTlsSessions();
+    
+    // Refresh configuration button
+    document.getElementById('refresh-tls-info').addEventListener('click', loadTlsInfo);
+    
+    // Generate demo key button
+    document.getElementById('generateDemoKey').addEventListener('click', generateDemoKey);
+    
+    // Handshake button
+    document.getElementById('performHandshake').addEventListener('click', performTlsHandshake);
+    
+    // Reset demo button
+    document.getElementById('resetTlsDemo').addEventListener('click', resetTlsUI);
+    
+    // Encryption buttons
+    document.getElementById('encryptTlsMessage').addEventListener('click', encryptTlsMessage);
+    document.getElementById('decryptTlsMessage').addEventListener('click', decryptTlsMessage);
+    
+    // Refresh sessions button
+    document.getElementById('refreshSessions').addEventListener('click', loadTlsSessions);
+    
+    // Auto-refresh sessions every 30 seconds
+    setInterval(loadTlsSessions, 30000);
+});
+</script>
+{% endblock %}

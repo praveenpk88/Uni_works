@@ -1,0 +1,556 @@
+{% extends "base.html" %}
+
+{% block title %}Quantum-Safe Messaging - Secure Communication{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="mb-4">
+                <i class="bi bi-chat-dots text-success"></i>
+                Quantum-Safe Message Exchange
+            </h1>
+            <p class="lead text-muted mb-5">
+                Demonstrate secure communication between two services using post-quantum cryptography.
+                Messages are encrypted with quantum-resistant algorithms before transmission.
+            </p>
+        </div>
+    </div>
+
+    <!-- Service Status -->
+    <div class="row mb-5">
+        <div class="col-lg-12">
+            <div class="card card-quantum">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-activity text-info"></i> Messaging Services Status
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row" id="services-status">
+                        <div class="col-md-6">
+                            <h6><i class="bi bi-server"></i> Service 1 (Port 6000)</h6>
+                            <div id="service-1-status" class="mb-3">
+                                <div class="spinner-border spinner-border-sm" role="status"></div>
+                                Checking status...
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="bi bi-server"></i> Service 2 (Port 6001)</h6>
+                            <div id="service-2-status">
+                                <div class="spinner-border spinner-border-sm" role="status"></div>
+                                Checking status...
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <button id="refresh-status" class="btn btn-outline-info btn-sm">
+                                <i class="bi bi-arrow-clockwise"></i> Refresh Status
+                            </button>
+                            <button id="initiate-key-exchange" class="btn btn-success btn-sm ms-2">
+                                <i class="bi bi-key"></i> Initiate Key Exchange
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Exchange -->
+    <div class="row mb-5">
+        <div class="col-lg-12">
+            <div class="card card-quantum">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-envelope-lock text-primary"></i> Send Encrypted Message
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="messageText" class="form-label">Message to Send:</label>
+                                <textarea id="messageText" class="form-control" rows="3" 
+                                    placeholder="Enter your secure message here...">Hello from the quantum-safe messaging system! This message is encrypted with post-quantum cryptography.</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="senderService" class="form-label">Sender Service:</label>
+                                <select id="senderService" class="form-select">
+                                    <option value="service-1">Service 1 → Service 2</option>
+                                    <option value="service-2">Service 2 → Service 1</option>
+                                </select>
+                            </div>
+                            <button id="sendMessage" class="btn btn-primary">
+                                <i class="bi bi-send"></i> Send Encrypted Message
+                            </button>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="bi bi-shield-lock"></i> Security Features
+                                    </h6>
+                                    <ul class="list-unstyled mb-0">
+                                        <li><i class="bi bi-check text-success"></i> AES-256 encryption</li>
+                                        <li><i class="bi bi-check text-success"></i> RSA key exchange</li>
+                                        <li><i class="bi bi-check text-success"></i> Digital signatures</li>
+                                        <li><i class="bi bi-check text-success"></i> Message integrity</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="sendResult" class="d-none mt-3">
+                        <h6>Send Result:</h6>
+                        <div class="crypto-output" id="sendOutput"></div>
+                    </div>
+                    
+                    <div id="sendLoading" class="d-none text-center py-3">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="mt-2">Sending encrypted message...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Database Statistics -->
+    <div class="row mb-5">
+        <div class="col-lg-12">
+            <div class="card card-quantum">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-database text-info"></i> Quantum-Safe Message Database
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="database-stats" class="row">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h4 class="text-primary mb-0" id="total-messages">-</h4>
+                                <small class="text-muted">Total Messages</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h4 class="text-success mb-0" id="verified-messages">-</h4>
+                                <small class="text-muted">Verified Messages</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h4 class="text-info mb-0" id="verification-rate">-</h4>
+                                <small class="text-muted">Verification Rate</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h4 class="text-warning mb-0" id="recent-activity">-</h4>
+                                <small class="text-muted">Recent (24h)</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <button id="refresh-db-stats" class="btn btn-outline-info btn-sm">
+                                <i class="bi bi-arrow-clockwise"></i> Refresh Statistics
+                            </button>
+                            <button id="view-stored-messages" class="btn btn-outline-primary btn-sm ms-2">
+                                <i class="bi bi-list"></i> View Stored Messages
+                            </button>
+                        </div>
+                    </div>
+                    <div id="stored-messages-display" class="d-none mt-3">
+                        <h6>Recent Stored Messages:</h6>
+                        <div id="stored-messages-content" class="crypto-output"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message History -->
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card card-quantum">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="bi bi-clock-history"></i> Service 1 Message History
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div id="service-1-history">
+                        <p class="text-muted">No messages yet</p>
+                    </div>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="loadMessageHistory('service-1')">
+                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6 mb-4">
+            <div class="card card-quantum">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="bi bi-clock-history"></i> Service 2 Message History
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div id="service-2-history">
+                        <p class="text-muted">No messages yet</p>
+                    </div>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="loadMessageHistory('service-2')">
+                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Load services status
+async function loadServicesStatus() {
+    try {
+        const response = await apiCall('/api/messaging/status');
+        
+        if (response.error) {
+            throw new Error(response.error);
+        }
+
+        // Update Service 1 status
+        const service1Status = document.getElementById('service-1-status');
+        const service1Data = response.services['service-1'];
+        if (service1Data.error) {
+            service1Status.innerHTML = `<span class="badge bg-danger">Offline</span> <small class="text-muted">${service1Data.error}</small>`;
+        } else {
+            service1Status.innerHTML = `
+                <span class="badge bg-success">Online</span>
+                <small class="text-muted d-block">
+                    Port: ${service1Data.service_port} | 
+                    Keys: ${service1Data.has_keypair ? '✓' : '✗'} | 
+                    Partner: ${service1Data.has_partner_key ? '✓' : '✗'} |
+                    Messages: ${service1Data.message_count}
+                </small>
+            `;
+        }
+
+        // Update Service 2 status
+        const service2Status = document.getElementById('service-2-status');
+        const service2Data = response.services['service-2'];
+        if (service2Data.error) {
+            service2Status.innerHTML = `<span class="badge bg-danger">Offline</span> <small class="text-muted">${service2Data.error}</small>`;
+        } else {
+            service2Status.innerHTML = `
+                <span class="badge bg-success">Online</span>
+                <small class="text-muted d-block">
+                    Port: ${service2Data.service_port} | 
+                    Keys: ${service2Data.has_keypair ? '✓' : '✗'} | 
+                    Partner: ${service2Data.has_partner_key ? '✓' : '✗'} |
+                    Messages: ${service2Data.message_count}
+                </small>
+            `;
+        }
+
+    } catch (error) {
+        console.error('Failed to load services status:', error);
+        document.getElementById('service-1-status').innerHTML = '<span class="badge bg-danger">Error</span>';
+        document.getElementById('service-2-status').innerHTML = '<span class="badge bg-danger">Error</span>';
+    }
+}
+
+// Load message history for a service
+async function loadMessageHistory(serviceId) {
+    try {
+        const response = await apiCall(`/api/messaging/history/${serviceId}`);
+        
+        const historyContainer = document.getElementById(`${serviceId}-history`);
+        
+        if (response.error) {
+            historyContainer.innerHTML = `<span class="text-danger">Error: ${response.error}</span>`;
+            return;
+        }
+
+        const history = response.history;
+        
+        if (!history.messages || history.messages.length === 0) {
+            historyContainer.innerHTML = '<p class="text-muted">No messages yet</p>';
+            return;
+        }
+
+        let historyHtml = '<div class="message-history">';
+        history.messages.slice(-5).forEach(msg => {
+            const timestamp = new Date(msg.timestamp).toLocaleString();
+            const type = msg.type === 'sent' ? 'Sent' : 'Received';
+            const typeClass = msg.type === 'sent' ? 'primary' : 'success';
+            
+            let messageText = '';
+            if (msg.type === 'sent' && msg.original_message) {
+                messageText = msg.original_message;
+            } else if (msg.type === 'received' && msg.decrypted_result && msg.decrypted_result.message) {
+                messageText = msg.decrypted_result.message;
+            }
+
+            historyHtml += `
+                <div class="message-item mb-2 p-2 border rounded">
+                    <small class="badge bg-${typeClass}">${type}</small>
+                    <small class="text-muted ms-2">${timestamp}</small>
+                    <div class="mt-1">${messageText.substring(0, 100)}${messageText.length > 100 ? '...' : ''}</div>
+                </div>
+            `;
+        });
+        historyHtml += '</div>';
+        
+        historyContainer.innerHTML = historyHtml;
+
+    } catch (error) {
+        console.error(`Failed to load ${serviceId} history:`, error);
+        document.getElementById(`${serviceId}-history`).innerHTML = 
+            `<span class="text-danger">Error: ${error.message}</span>`;
+    }
+}
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    // Load initial status
+    loadServicesStatus();
+    
+    // Auto-refresh every 10 seconds
+    setInterval(loadServicesStatus, 10000);
+    
+    // Refresh status button
+    document.getElementById('refresh-status').addEventListener('click', function() {
+        loadServicesStatus();
+        loadMessageHistory('service-1');
+        loadMessageHistory('service-2');
+    });
+
+    // Key exchange button
+    document.getElementById('initiate-key-exchange').addEventListener('click', async function() {
+        try {
+            this.disabled = true;
+            this.innerHTML = '<i class="bi bi-hourglass-split"></i> Exchanging Keys...';
+            
+            const response = await apiCall('/api/messaging/initiate-key-exchange', {}, 'POST');
+            
+            if (response.error) {
+                throw new Error(response.error);
+            }
+            
+            // Show success and refresh status
+            this.innerHTML = '<i class="bi bi-check"></i> Key Exchange Complete';
+            this.className = 'btn btn-success btn-sm ms-2';
+            
+            setTimeout(() => {
+                this.innerHTML = '<i class="bi bi-key"></i> Initiate Key Exchange';
+                this.className = 'btn btn-success btn-sm ms-2';
+                this.disabled = false;
+                loadServicesStatus();
+            }, 2000);
+            
+        } catch (error) {
+            console.error('Key exchange failed:', error);
+            this.innerHTML = '<i class="bi bi-x"></i> Key Exchange Failed';
+            this.className = 'btn btn-danger btn-sm ms-2';
+            
+            setTimeout(() => {
+                this.innerHTML = '<i class="bi bi-key"></i> Initiate Key Exchange';
+                this.className = 'btn btn-success btn-sm ms-2';
+                this.disabled = false;
+            }, 3000);
+        }
+    });
+
+    // Send message button
+    document.getElementById('sendMessage').addEventListener('click', async function() {
+        const message = document.getElementById('messageText').value.trim();
+        const senderService = document.getElementById('senderService').value;
+        
+        if (!message) {
+            alert('Please enter a message to send');
+            return;
+        }
+        
+        const resultsDiv = document.getElementById('sendResult');
+        const outputDiv = document.getElementById('sendOutput');
+        const loadingDiv = document.getElementById('sendLoading');
+        
+        // Show loading
+        resultsDiv.classList.add('d-none');
+        loadingDiv.classList.remove('d-none');
+        
+        try {
+            const response = await apiCall('/api/messaging/send', {
+                message: message,
+                sender_service: senderService
+            }, 'POST');
+            
+            if (response.error) {
+                throw new Error(response.error);
+            }
+            
+            let outputHtml = `
+                <strong>Message sent successfully!</strong><br>
+                <strong>Sender:</strong> ${senderService}<br>
+                <strong>Algorithm:</strong> ${response.result.encrypted_data.algorithm}<br>
+                <strong>Encrypted Size:</strong> ${response.result.encrypted_data.encrypted_message.length} bytes<br>
+                <strong>Timestamp:</strong> ${new Date(response.result.encrypted_data.timestamp).toLocaleString()}<br>
+                <strong>Partner Response:</strong> ${response.result.partner_response.success ? 'Success' : 'Failed'}<br>
+                <strong>Decrypted Message:</strong> "${response.result.partner_response.decrypted_result.message}"<br>
+            `;
+            
+            // Add database information if available
+            if (response.result.database_info) {
+                const dbInfo = response.result.database_info;
+                outputHtml += `<br><div class="border-top pt-2 mt-2">
+                    <strong>🗄️ Database Storage:</strong><br>
+                    ${dbInfo.error ? `<span class="text-warning">⚠️ ${dbInfo.error}</span>` : `
+                        <strong>Message ID:</strong> ${dbInfo.message_id}<br>
+                        <strong>BLAKE2 Hash:</strong> <small class="font-monospace">${dbInfo.blake2_hash}</small><br>
+                        <strong>SHA3 Hash:</strong> <small class="font-monospace">${dbInfo.sha3_hash}</small><br>
+                        <strong>Verified:</strong> ${dbInfo.is_verified ? '✅ Yes' : '❌ No'}<br>
+                        <strong>Stored At:</strong> ${dbInfo.stored_at ? new Date(dbInfo.stored_at).toLocaleString() : 'N/A'}
+                    `}
+                </div>`;
+            }
+            
+            outputDiv.innerHTML = outputHtml;
+            
+            loadingDiv.classList.add('d-none');
+            resultsDiv.classList.remove('d-none');
+            
+            // Refresh message history after sending
+            setTimeout(() => {
+                loadMessageHistory('service-1');
+                loadMessageHistory('service-2');
+            }, 1000);
+            
+        } catch (error) {
+            outputDiv.innerHTML = `<span class="text-danger">Error: ${error.message}</span>`;
+            loadingDiv.classList.add('d-none');
+            resultsDiv.classList.remove('d-none');
+        }
+    });
+
+    // Database statistics refresh
+    document.getElementById('refresh-db-stats').addEventListener('click', async function() {
+        await loadDatabaseStatistics();
+    });
+
+    // View stored messages
+    document.getElementById('view-stored-messages').addEventListener('click', async function() {
+        await loadStoredMessages();
+    });
+
+    // Load initial data
+    setTimeout(() => {
+        loadMessageHistory('service-1');
+        loadMessageHistory('service-2');
+        loadDatabaseStatistics();
+    }, 1000);
+});
+
+// Load database statistics
+async function loadDatabaseStatistics() {
+    try {
+        const response = await apiCall('/api/messaging/database/statistics');
+        
+        if (response.error) {
+            throw new Error(response.error);
+        }
+
+        const stats = response.statistics;
+        
+        // Update statistics display
+        document.getElementById('total-messages').textContent = stats.total_messages || 0;
+        document.getElementById('verified-messages').textContent = stats.verified_messages || 0;
+        document.getElementById('verification-rate').textContent = 
+            (stats.verification_rate || 0).toFixed(1) + '%';
+        document.getElementById('recent-activity').textContent = stats.recent_activity || 0;
+
+    } catch (error) {
+        console.error('Failed to load database statistics:', error);
+        document.getElementById('total-messages').textContent = 'Error';
+    }
+}
+
+// Load stored messages
+async function loadStoredMessages() {
+    try {
+        const service1Response = await apiCall('/api/messaging/database/messages/service-1?limit=10');
+        const service2Response = await apiCall('/api/messaging/database/messages/service-2?limit=10');
+        
+        const displayDiv = document.getElementById('stored-messages-display');
+        const contentDiv = document.getElementById('stored-messages-content');
+        
+        let messagesHtml = '';
+        
+        if (service1Response.success && service1Response.messages.length > 0) {
+            messagesHtml += '<strong>Service-1 Messages:</strong><br>';
+            service1Response.messages.slice(0, 5).forEach(msg => {
+                messagesHtml += `
+                    <div class="mb-2 p-2 border rounded">
+                        <strong>ID:</strong> ${msg.id} | 
+                        <strong>From:</strong> ${msg.sender_service_id} → ${msg.receiver_service_id}<br>
+                        <strong>BLAKE2:</strong> <small class="font-monospace">${msg.message_hash_blake2.substring(0, 32)}...</small><br>
+                        <strong>Verified:</strong> ${msg.is_verified ? '✅' : '❌'} | 
+                        <strong>Created:</strong> ${new Date(msg.created_at).toLocaleString()}
+                    </div>
+                `;
+            });
+        }
+        
+        if (service2Response.success && service2Response.messages.length > 0) {
+            messagesHtml += '<br><strong>Service-2 Messages:</strong><br>';
+            service2Response.messages.slice(0, 5).forEach(msg => {
+                messagesHtml += `
+                    <div class="mb-2 p-2 border rounded">
+                        <strong>ID:</strong> ${msg.id} | 
+                        <strong>From:</strong> ${msg.sender_service_id} → ${msg.receiver_service_id}<br>
+                        <strong>BLAKE2:</strong> <small class="font-monospace">${msg.message_hash_blake2.substring(0, 32)}...</small><br>
+                        <strong>Verified:</strong> ${msg.is_verified ? '✅' : '❌'} | 
+                        <strong>Created:</strong> ${new Date(msg.created_at).toLocaleString()}
+                    </div>
+                `;
+            });
+        }
+        
+        if (!messagesHtml) {
+            messagesHtml = '<p class="text-muted">No stored messages found.</p>';
+        }
+        
+        contentDiv.innerHTML = messagesHtml;
+        displayDiv.classList.remove('d-none');
+        
+    } catch (error) {
+        console.error('Failed to load stored messages:', error);
+        const contentDiv = document.getElementById('stored-messages-content');
+        contentDiv.innerHTML = `<span class="text-danger">Error: ${error.message}</span>`;
+        document.getElementById('stored-messages-display').classList.remove('d-none');
+    }
+}
+</script>
+
+<style>
+.message-history {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.message-item {
+    background-color: #f8f9fa;
+}
+
+.service-status {
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+</style>
+{% endblock %}
