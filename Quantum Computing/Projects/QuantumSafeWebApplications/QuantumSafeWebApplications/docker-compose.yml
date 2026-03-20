@@ -1,0 +1,120 @@
+version: '3.8'
+
+services:
+  quantum-safe-web:
+    build: .
+    container_name: quantum-safe-web-app
+    ports:
+      - "80:80"
+      - "443:443"
+      - "5000:5000"
+    volumes:
+      - ./app:/app
+      - ./certs:/app/certs
+      - ./logs:/app/logs
+      - ./config:/etc/config
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+      - PYTHONPATH=/app
+      - OQS_PROVIDER_PATH=/usr/local/lib/ossl-modules/oqsprovider.so
+      - DATABASE_URL=postgresql://quantum_user:quantum_secure_pass_2024@postgres:5432/quantum_safe_db
+      - POSTGRES_DB=quantum_safe_db
+      - POSTGRES_USER=quantum_user
+      - POSTGRES_PASSWORD=quantum_secure_pass_2024
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - quantum-safe-network
+
+  # Optional: Database service for storing quantum-safe keys and certificates
+  postgres:
+    image: postgres:15-alpine
+    container_name: quantum-safe-db
+    environment:
+      POSTGRES_DB: quantum_safe_db
+      POSTGRES_USER: quantum_user
+      POSTGRES_PASSWORD: quantum_secure_pass_2024
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - quantum-safe-network
+
+  # Optional: Redis for session management and caching
+  redis:
+    image: redis:7-alpine
+    container_name: quantum-safe-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - quantum-safe-network
+    command: redis-server --appendonly yes
+
+  # Quantum-Safe Message Exchange Service 1
+  message-service-1:
+    build:
+      context: ./services
+      dockerfile: Dockerfile
+    container_name: quantum-message-service-1
+    ports:
+      - "6000:6000"
+    environment:
+      - SERVICE_ID=service-1
+      - SERVICE_PORT=6000
+      - PARTNER_SERVICE_URL=http://message-service-2:6001
+    restart: unless-stopped
+    networks:
+      - quantum-safe-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Quantum-Safe Message Exchange Service 2  
+  message-service-2:
+    build:
+      context: ./services
+      dockerfile: Dockerfile
+    container_name: quantum-message-service-2
+    ports:
+      - "6001:6001"
+    environment:
+      - SERVICE_ID=service-2
+      - SERVICE_PORT=6001
+      - PARTNER_SERVICE_URL=http://message-service-1:6000
+    restart: unless-stopped
+    networks:
+      - quantum-safe-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  quantum-safe-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
