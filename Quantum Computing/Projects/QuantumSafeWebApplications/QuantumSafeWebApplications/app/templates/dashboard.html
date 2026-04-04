@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Quantum-Safe Crypto{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="mb-4">
+                <i class="bi bi-graph-up text-primary"></i>
+                Quantum-Safe Cryptography Dashboard
+            </h1>
+            <p class="lead text-muted mb-5">
+                Monitor the status and performance of quantum-safe cryptographic operations.
+            </p>
+        </div>
+    </div>
+
+    <!-- System Status Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-lg-3">
+            <div class="card card-quantum text-center">
+                <div class="card-body">
+                    <div class="display-6 text-success mb-2">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h5 class="card-title">System Status</h5>
+                    <p class="card-text text-success fw-bold" id="system-status">Quantum-Safe</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="card card-quantum text-center">
+                <div class="card-body">
+                    <div class="display-6 text-primary mb-2">
+                        <i class="bi bi-cpu"></i>
+                    </div>
+                    <h5 class="card-title">KEM Algorithms</h5>
+                    <p class="card-text text-primary fw-bold" id="kem-count">Loading...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="card card-quantum text-center">
+                <div class="card-body">
+                    <div class="display-6 text-info mb-2">
+                        <i class="bi bi-pen"></i>
+                    </div>
+                    <h5 class="card-title">Signature Schemes</h5>
+                    <p class="card-text text-info fw-bold" id="sig-count">Loading...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="card card-quantum text-center">
+                <div class="card-body">
+                    <div class="display-6 text-warning mb-2">
+                        <i class="bi bi-activity"></i>
+                    </div>
+                    <h5 class="card-title">Health Score</h5>
+                    <p class="card-text text-warning fw-bold">100%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Algorithm Details -->
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card card-quantum">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-key text-primary"></i> Key Encapsulation Mechanisms
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="kem-list" class="algorithm-list">
+                        <div class="text-center py-3">
+                            <div class="spinner-border text-primary" role="status"></div>
+                            <p class="mt-2">Loading KEM algorithms...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card card-quantum">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-pen text-success"></i> Digital Signature Schemes
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="sig-list" class="algorithm-list">
+                        <div class="text-center py-3">
+                            <div class="spinner-border text-success" role="status"></div>
+                            <p class="mt-2">Loading signature algorithms...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Metrics -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card card-quantum">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-speedometer2 text-info"></i> Performance Metrics
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6>Key Sizes Comparison</h6>
+                            <div class="progress mb-2">
+                                <div class="progress-bar bg-primary" style="width: 30%">Kyber512</div>
+                            </div>
+                            <div class="progress mb-2">
+                                <div class="progress-bar bg-primary" style="width: 60%">Kyber768</div>
+                            </div>
+                            <div class="progress mb-3">
+                                <div class="progress-bar bg-primary" style="width: 90%">Kyber1024</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>Signature Sizes Comparison</h6>
+                            <div class="progress mb-2">
+                                <div class="progress-bar bg-success" style="width: 25%">Dilithium2</div>
+                            </div>
+                            <div class="progress mb-2">
+                                <div class="progress-bar bg-success" style="width: 50%">Dilithium3</div>
+                            </div>
+                            <div class="progress mb-3">
+                                <div class="progress-bar bg-success" style="width: 75%">Dilithium5</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>Security Levels</h6>
+                            <ul class="list-unstyled">
+                                <li><span class="badge bg-success me-2">Level 1</span>128-bit security</li>
+                                <li><span class="badge bg-warning me-2">Level 3</span>192-bit security</li>
+                                <li><span class="badge bg-danger me-2">Level 5</span>256-bit security</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.algorithm-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+.algorithm-item {
+    padding: 0.5rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: between;
+    align-items: center;
+}
+.algorithm-item:last-child {
+    border-bottom: none;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+    try {
+        // Load algorithm information
+        const algorithms = await apiCall('/api/algorithms');
+        
+        if (algorithms.error) {
+            throw new Error(algorithms.error);
+        }
+
+        // Update counts
+        document.getElementById('kem-count').textContent = algorithms.total_kems || 0;
+        document.getElementById('sig-count').textContent = algorithms.total_sigs || 0;
+
+        // Populate KEM list
+        const kemList = document.getElementById('kem-list');
+        if (algorithms.key_encapsulation_mechanisms && algorithms.key_encapsulation_mechanisms.length > 0) {
+            kemList.innerHTML = algorithms.key_encapsulation_mechanisms
+                .map((algo, index) => `
+                    <div class="algorithm-item">
+                        <div>
+                            <span class="fw-bold">${algo}</span>
+                            <small class="text-muted d-block">Quantum-resistant key exchange</small>
+                        </div>
+                        <span class="badge bg-primary">#${index + 1}</span>
+                    </div>
+                `).join('');
+        } else {
+            kemList.innerHTML = '<p class="text-muted">No KEM algorithms available</p>';
+        }
+
+        // Populate Signature list
+        const sigList = document.getElementById('sig-list');
+        if (algorithms.digital_signatures && algorithms.digital_signatures.length > 0) {
+            sigList.innerHTML = algorithms.digital_signatures
+                .map((algo, index) => `
+                    <div class="algorithm-item">
+                        <div>
+                            <span class="fw-bold">${algo}</span>
+                            <small class="text-muted d-block">Post-quantum digital signature</small>
+                        </div>
+                        <span class="badge bg-success">#${index + 1}</span>
+                    </div>
+                `).join('');
+        } else {
+            sigList.innerHTML = '<p class="text-muted">No signature algorithms available</p>';
+        }
+
+    } catch (error) {
+        console.error('Failed to load dashboard data:', error);
+        document.getElementById('system-status').textContent = 'Error';
+        document.getElementById('system-status').className = 'card-text text-danger fw-bold';
+        document.getElementById('kem-count').textContent = 'Error';
+        document.getElementById('sig-count').textContent = 'Error';
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,33 @@
+# Web Framework
+Flask==2.3.3
+Flask-CORS==4.0.0
+Flask-SQLAlchemy==3.0.5
+
+# Database
+psycopg2-binary==2.9.7
+SQLAlchemy==2.0.23
+
+# Basic Cryptography
+pycryptodome==3.19.0
+cryptography==41.0.7
+
+# Post-Quantum Cryptography (Optional - falls back to simulation if not available)
+# pyoqs==0.9.0
+
+# Quantum-Safe Hashing (SHA-3, BLAKE2)
+pycryptodomex==3.19.0
+
+# TLS and SSL Support
+pyOpenSSL==23.3.0
+certifi==2023.11.17
+
+# Additional Security Libraries
+bcrypt==4.1.1
+
+# HTTP Client and Server
+requests==2.31.0
+gunicorn==21.2.0
+
+# Utility Libraries
+python-dotenv==1.0.0
+python-dateutil==2.8.2

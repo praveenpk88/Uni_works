@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum-Safe Web Application - Deployment Guide</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section h3 {
+            color: #34495e;
+            font-size: 1.3em;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        
+        .icon {
+            font-size: 1.2em;
+            margin-right: 10px;
+        }
+        
+        .command-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            position: relative;
+        }
+        
+        .command-block::before {
+            content: '$ ';
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .multi-command {
+            background: #34495e;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .multi-command .comment {
+            color: #95a5a6;
+            font-style: italic;
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .error-box {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .url-list {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .url-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .url-list li {
+            background: white;
+            margin: 8px 0;
+            padding: 10px 15px;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .url-list a {
+            color: #2980b9;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .url-list a:hover {
+            text-decoration: underline;
+        }
+        
+        .step-number {
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 0.9em;
+        }
+        
+        .architecture {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .service-card {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .service-card h4 {
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+        }
+        
+        .service-card p {
+            margin: 0;
+            opacity: 0.9;
+        }
+        
+        .quantum-features {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .quantum-features h3 {
+            margin-top: 0;
+            color: white;
+        }
+        
+        .quantum-features ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .quantum-features li {
+            padding: 5px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .quantum-features li::before {
+            content: '🔒';
+            position: absolute;
+            left: 0;
+        }
+        
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-healthy {
+            background: #27ae60;
+            box-shadow: 0 0 5px #27ae60;
+        }
+        
+        .status-warning {
+            background: #f39c12;
+            box-shadow: 0 0 5px #f39c12;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .header, .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Quantum-Safe Web Application</h1>
+            <p>Complete Deployment & Management Guide</p>
+            <p style="font-size: 1em; margin-top: 15px; opacity: 0.8;">
+                🍎 macOS | 🏢 Windows | 🐧 Linux Compatible
+            </p>
+        </div>
+        
+        <div class="content">
+            <!-- Prerequisites Section -->
+            <div class="section">
+                <h2><span class="icon">📋</span>Prerequisites</h2>
+                <p>Before starting, ensure you have the following installed on your system:</p>
+                
+                <div class="info-box">
+                    <strong>💡 For Windows Users:</strong><br>
+                    Throughout this guide, you'll see commands for both PowerShell/Command Prompt and WSL (Windows Subsystem for Linux). 
+                    <strong>WSL is highly recommended</strong> as it provides a native Linux environment with better compatibility for development tools and Docker containers. 
+                    See the <a href="#wsl-setup">WSL Setup section</a> below for installation instructions.
+                </div>
+                
+                <h3><span class="step-number">1</span>Verify Docker Installation</h3>
+                <div class="command-block">docker --version && docker-compose --version</div>
+                
+                <div class="info-box">
+                    <strong>✅ Expected Output:</strong><br>
+                    Docker version 29.2.0+<br>
+                    Docker Compose version v5.0.2+
+                </div>
+                
+                <h3><span class="step-number">2</span>Install Docker Desktop</h3>
+                <p>Docker Desktop is the recommended way to run Docker on desktop systems. It includes Docker Engine, Docker CLI client, Docker Buildx, and Docker Compose.</p>
+                
+                <h4>🍎 macOS Installation</h4>
+                <div class="multi-command">
+<span class="comment"># Method 1: Download from Docker website</span>
+# Visit: https://www.docker.com/products/docker-desktop/
+# Download Docker Desktop for Mac (Apple Silicon or Intel)
+# Double-click the .dmg file and drag Docker to Applications
+
+<span class="comment"># Method 2: Using Homebrew</span>
+brew install --cask docker
+
+<span class="comment"># Method 3: Using MacPorts</span>
+sudo port install docker-desktop
+                </div>
+                
+                <div class="info-box">
+                    <strong>📝 macOS Notes:</strong><br>
+                    • Choose Apple Silicon version for M1/M2/M3 Macs<br>
+                    • Choose Intel version for older Intel Macs<br>
+                    • Docker Desktop requires macOS 10.15 or newer<br>
+                    • After installation, launch Docker Desktop from Applications
+                </div>
+                
+                <h4>🏢 Windows Installation</h4>
+                <div class="multi-command">
+<span class="comment"># Method 1: Download from Docker website</span>
+# Visit: https://www.docker.com/products/docker-desktop/
+# Download Docker Desktop for Windows
+# Run the installer and follow the setup wizard
+
+<span class="comment"># Method 2: Using winget (Windows Package Manager)</span>
+winget install Docker.DockerDesktop
+
+<span class="comment"># Method 3: Using Chocolatey</span>
+choco install docker-desktop
+                </div>
+                
+                <div class="info-box">
+                    <strong>📝 Windows Notes:</strong><br>
+                    • Windows 10 64-bit: Pro, Enterprise, or Education (Build 16299 or later)<br>
+                    • Windows 11 64-bit: Home or Pro version 21H2 or higher<br>
+                    • WSL 2 backend is recommended for better performance<br>
+                    • Hyper-V must be enabled (will be done automatically)<br>
+                    • <strong>Consider installing WSL 2 first (see WSL section below) for optimal performance</strong>
+                </div>
+                
+                <h3 id="wsl-setup">🐧 Windows Subsystem for Linux (WSL) Setup</h3>
+                <p>WSL allows Windows users to run a Linux environment directly on Windows, providing better compatibility with Linux-based development tools and Docker containers.</p>
+                
+                <h4>🚀 Quick WSL 2 Installation (Windows 10 version 2004+ / Windows 11)</h4>
+                <div class="multi-command">
+<span class="comment"># PowerShell (Run as Administrator)</span>
+wsl --install
+
+<span class="comment"># This command will:</span>
+# - Enable required Windows features
+# - Download and install Ubuntu (default distribution)
+# - Set WSL 2 as the default version
+# - Require a restart
+
+<span class="comment"># After restart, set up Ubuntu user account</span>
+# Ubuntu will open automatically and prompt for username/password
+                </div>
+                
+                <h4>📋 Manual WSL 2 Installation (Older Windows 10 versions)</h4>
+                <div class="multi-command">
+<span class="comment"># Step 1: Enable WSL feature (PowerShell as Administrator)</span>
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+
+<span class="comment"># Step 2: Enable Virtual Machine Platform</span>
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+
+<span class="comment"># Step 3: Restart your computer</span>
+shutdown /r /t 0
+
+<span class="comment"># Step 4: Download and install WSL2 Linux kernel update</span>
+# Visit: https://aka.ms/wsl2kernel
+# Download and run the MSI installer
+
+<span class="comment"># Step 5: Set WSL 2 as default version</span>
+wsl --set-default-version 2
+                </div>
+                
+                <h4>🐧 Install Linux Distribution</h4>
+                <div class="multi-command">
+<span class="comment"># List available distributions</span>
+wsl --list --online
+
+<span class="comment"># Install Ubuntu (recommended for development)</span>
+wsl --install -d Ubuntu
+
+<span class="comment"># Alternative distributions</span>
+wsl --install -d Ubuntu-20.04
+wsl --install -d Ubuntu-22.04
+wsl --install -d Debian
+wsl --install -d kali-linux
+                </div>
+                
+                <h4>⚙️ Configure WSL 2</h4>
+                <div class="multi-command">
+<span class="comment"># Check WSL version and status</span>
+wsl --list --verbose
+
+<span class="comment"># Set specific distribution to WSL 2 (if needed)</span>
+wsl --set-version Ubuntu 2
+
+<span class="comment"># Launch your Linux distribution</span>
+wsl
+
+<span class="comment"># Or launch specific distribution</span>
+wsl -d Ubuntu
+                </div>
+                
+                <h4>🔧 Essential WSL Configuration</h4>
+                <p>Once inside your WSL environment, set up essential tools:</p>
+                <div class="multi-command">
+<span class="comment"># Update package lists</span>
+sudo apt update && sudo apt upgrade -y
+
+<span class="comment"># Install essential development tools</span>
+sudo apt install -y curl wget git build-essential
+
+<span class="comment"># Install Docker CLI (for use with Docker Desktop)</span>
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt update
+sudo apt install -y docker-ce-cli docker-compose-plugin
+                </div>
+                
+                <h4>🎯 WSL Integration with Docker Desktop</h4>
+                <div class="info-box">
+                    <strong>📝 Docker Desktop + WSL 2 Benefits:</strong><br>
+                    • Faster container startup times<br>
+                    • Better file system performance<br>
+                    • Native Linux container compatibility<br>
+                    • Reduced resource usage<br>
+                    • Access to Linux development tools
+                </div>
+                
+                <div class="multi-command">
+<span class="comment"># After installing Docker Desktop:</span>
+# 1. Open Docker Desktop
+# 2. Go to Settings → General
+# 3. Check "Use the WSL 2 based engine"
+# 4. Go to Settings → Resources → WSL Integration
+# 5. Enable integration with your Ubuntu distribution
+# 6. Restart Docker Desktop
+
+<span class="comment"># Test Docker from WSL</span>
+wsl
+docker --version
+docker-compose --version
+                </div>
+                
+                <h4>💡 WSL Usage Tips</h4>
+                <div class="info-box">
+                    <strong>🚀 Pro Tips:</strong><br>
+                    • <strong>File Access:</strong> Windows files at <code>/mnt/c/</code>, Linux files at <code>/home/username/</code><br>
+                    • <strong>VS Code:</strong> Install "Remote - WSL" extension for seamless editing<br>
+                    • <strong>Performance:</strong> Keep project files in WSL filesystem for better performance<br>
+                    • <strong>Terminal:</strong> Use Windows Terminal for better WSL experience<br>
+                    • <strong>Commands:</strong> Run <code>wsl</code> from any Windows directory to start Linux shell
+                </div>
+                
+                <h4>🛠️ Troubleshooting WSL</h4>
+                <div class="multi-command">
+<span class="comment"># Check WSL status</span>
+wsl --status
+
+<span class="comment"># Restart WSL service</span>
+wsl --shutdown
+wsl
+
+<span class="comment"># Update WSL</span>
+wsl --update
+
+<span class="comment"># Reset specific distribution (if needed)</span>
+wsl --unregister Ubuntu
+wsl --install -d Ubuntu
+                </div>
+                
+                <div class="warning-box">
+                    <strong>⚠️ Important Notes:</strong><br>
+                    • WSL 2 requires Windows 10 version 1903 or higher (Build 18362+)<br>
+                    • Administrator privileges required for initial setup<br>
+                    • Computer restart required during installation<br>
+                    • Docker Desktop automatically configures WSL 2 integration if WSL is already installed
+                </div>
+                
+                <h4>🐧 Linux Installation</h4>
+                <div class="multi-command">
+<span class="comment"># Method 1: Docker Desktop for Linux (Ubuntu, Debian, Fedora)</span>
+# Visit: https://docs.docker.com/desktop/install/linux-install/
+# Download the appropriate .deb or .rpm package
+
+<span class="comment"># Method 2: Traditional Docker Engine + Docker Compose</span>
+# Ubuntu/Debian
+sudo apt update
+sudo apt install ca-certificates curl gnupg lsb-release
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+<span class="comment"># Fedora/RHEL/CentOS</span>
+sudo dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+<span class="comment"># Start Docker service</span>
+sudo systemctl start docker
+sudo systemctl enable docker
+
+<span class="comment"># Add user to docker group (optional, for running without sudo)</span>
+sudo usermod -aG docker $USER
+newgrp docker
+                </div>
+                
+                <div class="info-box">
+                    <strong>📝 Linux Notes:</strong><br>
+                    • Docker Desktop for Linux is available for Ubuntu, Debian, and Fedora<br>
+                    • Traditional Docker Engine installation works on all Linux distributions<br>
+                    • Adding user to docker group allows running Docker without sudo<br>
+                    • Log out and back in after adding user to docker group
+                </div>
+                
+                <h3><span class="step-number">3</span>Post-Installation Setup</h3>
+                <div class="multi-command">
+<span class="comment"># Start Docker Desktop (GUI applications)</span>
+# Launch Docker Desktop from Applications/Start Menu
+
+<span class="comment"># Verify installation</span>
+docker --version
+docker-compose --version
+
+<span class="comment"># Test Docker with hello-world</span>
+docker run hello-world
+
+<span class="comment"># Check Docker system info</span>
+docker system info
+                </div>
+                
+                <div class="warning-box">
+                    <strong>⚠️ Important:</strong> Make sure Docker Desktop is running before proceeding with the quantum-safe application deployment. You should see the Docker icon in your system tray/menu bar.
+                </div>
+            </div>
+
+            <!-- Development Environment Setup Section -->
+            <div class="section">
+                <h2><span class="icon">💻</span>Development Environment Setup</h2>
+                <p>For the best development experience working with this quantum-safe application, we recommend setting up Visual Studio Code with GitHub Copilot:</p>
+                
+                <h3><span class="step-number">1</span>Install Visual Studio Code</h3>
+                <p>Visual Studio Code is a lightweight but powerful source code editor with excellent support for Python, Docker, and quantum computing development.</p>
+                
+                <h4>🍎 macOS Installation</h4>
+                <div class="multi-command">
+<span class="comment"># Method 1: Download from official website</span>
+# Visit: https://code.visualstudio.com/Download
+# Download the macOS version (.zip file)
+# Extract and drag to Applications folder
+
+<span class="comment"># Method 2: Using Homebrew</span>
+brew install --cask visual-studio-code
+
+<span class="comment"># Method 3: Using MacPorts</span>
+sudo port install vscode
+
+<span class="comment"># Launch from terminal (after installation)</span>
+code .
+                </div>
+                
+                <h4>🏢 Windows Installation</h4>
+                <div class="multi-command">
+<span class="comment"># Method 1: Download from official website</span>
+# Visit: https://code.visualstudio.com/Download
+# Download Windows installer (.exe)
+# Run the installer and follow setup wizard
+
+<span class="comment"># Method 2: Using winget</span>
+winget install Microsoft.VisualStudioCode
+
+<span class="comment"># Method 3: Using Chocolatey</span>
+choco install vscode
+
+<span class="comment"># Method 4: Using Scoop</span>
+scoop install vscode
+                </div>
+                
+                <h4>🐧 Linux Installation</h4>
+                <div class="multi-command">
+<span class="comment"># Ubuntu/Debian - Using official repository</span>
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+sudo install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/
+echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list
+sudo apt update
+sudo apt install code
+
+<span class="comment"># Fedora/RHEL/CentOS - Using RPM repository</span>
+sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo
+sudo dnf install code
+
+<span class="comment"># Arch Linux (using AUR)</span>
+yay -S visual-studio-code-bin
+
+<span class="comment"># Snap package (universal)</span>
+sudo snap install code --classic
+
+<span class="comment"># Flatpak</span>
+flatpak install flathub com.visualstudio.code
+                </div>
+                
+                <h3><span class="step-number">2</span>Install Essential Extensions</h3>
+                <p>Install these extensions for optimal quantum-safe development experience:</p>
+                <div class="multi-command">
+<span class="comment"># Install extensions via command line</span>
+code --install-extension ms-python.python
+code --install-extension ms-vscode.vscode-json
+code --install-extension ms-azuretools.vscode-docker
+code --install-extension ms-vscode-remote.remote-containers
+code --install-extension redhat.vscode-yaml
+code --install-extension ms-python.flake8
+code --install-extension ms-python.black-formatter
+code --install-extension quantum.qsharp-lang-vscode
+
+<span class="comment"># Or install via VS Code UI:</span>
+# Press Ctrl+Shift+X (Cmd+Shift+X on Mac)
+# Search for and install each extension
+                </div>
+                
+                <div class="info-box">
+                    <strong>📦 Recommended Extensions:</strong><br>
+                    • <strong>Python</strong> - Python language support<br>
+                    • <strong>Docker</strong> - Docker container management<br>
+                    • <strong>Remote - Containers</strong> - Develop inside containers<br>
+                    • <strong>YAML</strong> - Docker Compose file support<br>
+                    • <strong>Black Formatter</strong> - Python code formatting<br>
+                    • <strong>Quantum Development Kit</strong> - Q# and quantum computing support
+                </div>
+                
+                <h3><span class="step-number">3</span>Set Up GitHub Copilot</h3>
+                <p>GitHub Copilot is an AI-powered code completion tool that greatly accelerates quantum-safe application development.</p>
+                
+                <h4>📝 Prerequisites for GitHub Copilot</h4>
+                <div class="info-box">
+                    <strong>✅ Requirements:</strong><br>
+                    • Active GitHub account<br>
+                    • GitHub Copilot subscription (free for students, teachers, and open source maintainers)<br>
+                    • Visual Studio Code installed
+                </div>
+                
+                <h4>🔐 Sign Up for GitHub Copilot</h4>
+                <div class="multi-command">
+<span class="comment"># Step 1: Visit GitHub Copilot website</span>
+# Go to: https://github.com/features/copilot
+# Click "Start free trial" or "Get GitHub Copilot"
+
+<span class="comment"># Step 2: Choose your plan</span>
+# Individual: $10/month or $100/year
+# Business: $19/user/month
+# Free for verified students, teachers, and popular open source maintainers
+
+<span class="comment"># Step 3: Complete the subscription process</span>
+# Follow the prompts to set up billing (if not eligible for free access)
+                </div>
+                
+                <h4>🔌 Install GitHub Copilot Extension</h4>
+                <div class="multi-command">
+<span class="comment"># Method 1: Install via command line</span>
+code --install-extension GitHub.copilot
+code --install-extension GitHub.copilot-chat
+
+<span class="comment"># Method 2: Install via VS Code UI</span>
+# 1. Open VS Code
+# 2. Press Ctrl+Shift+X (Cmd+Shift+X on Mac) to open Extensions
+# 3. Search for "GitHub Copilot"
+# 4. Click Install on both "GitHub Copilot" and "GitHub Copilot Chat"
+                </div>
+                
+                <h4>⚙️ Configure GitHub Copilot</h4>
+                <div class="multi-command">
+<span class="comment"># Step 1: Sign in to GitHub</span>
+# 1. Open VS Code
+# 2. Press Ctrl+Shift+P (Cmd+Shift+P on Mac)
+# 3. Type "GitHub Copilot: Sign In"
+# 4. Follow the authentication flow in your browser
+
+<span class="comment"># Step 2: Verify installation</span>
+# Look for Copilot icon in VS Code status bar
+# Should show "✓" when active and authenticated
+
+<span class="comment"># Step 3: Test Copilot</span>
+# Open a Python file
+# Start typing a function - Copilot suggestions will appear in gray
+# Press Tab to accept suggestions
+                </div>
+                
+                <h4>🎛️ Copilot Settings & Shortcuts</h4>
+                <div class="multi-command">
+<span class="comment"># Keyboard shortcuts</span>
+# Tab - Accept suggestion
+# Esc - Dismiss suggestion
+# Alt+] - Next suggestion
+# Alt+[ - Previous suggestion
+# Ctrl+Enter - Open Copilot suggestions panel
+
+<span class="comment"># Access Copilot Chat</span>
+# Press Ctrl+Shift+I (Cmd+Shift+I on Mac)
+# Or click the chat icon in the activity bar
+# Ask questions like: "How do I implement quantum key exchange?"
+                </div>
+                
+                <div class="info-box">
+                    <strong>💡 Copilot Tips for Quantum Development:</strong><br>
+                    • Write clear comments describing quantum algorithms you want to implement<br>
+                    • Use descriptive function names like <code>generate_kyber_keypair()</code><br>
+                    • Ask Copilot Chat about quantum cryptography best practices<br>
+                    • Use Copilot to generate test cases for quantum-safe functions<br>
+                    • Let Copilot help with Docker configurations and deployment scripts
+                </div>
+                
+                <h3><span class="step-number">4</span>Configure VS Code for This Project</h3>
+                <div class="multi-command">
+<span class="comment"># Open the quantum-safe project in VS Code</span>
+cd "/path/to/QuantumSafeWebApplications"
+code .
+
+<span class="comment"># Configure Python interpreter</span>
+# Press Ctrl+Shift+P (Cmd+Shift+P on Mac)
+# Type "Python: Select Interpreter"
+# Choose the Python version you want to use
+
+<span class="comment"># Set up workspace settings</span>
+# VS Code will automatically detect the Docker environment
+# Python extension will provide IntelliSense for Flask and quantum libraries
+</div>
+                
+                <h4>🔧 Recommended VS Code Settings</h4>
+                <p>Create a <code>.vscode/settings.json</code> file in your project root:</p>
+                <div class="multi-command">
+{
+    "python.defaultInterpreterPath": "/usr/bin/python3",
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.formatting.provider": "black",
+    "docker.showStartPage": false,
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/.pytest_cache": true
+    },
+    "github.copilot.enable": {
+        "*": true,
+        "yaml": true,
+        "plaintext": false,
+        "markdown": true,
+        "python": true
+    }
+}
+                </div>
+                
+                <div class="warning-box">
+                    <strong>⚠️ Important:</strong> GitHub Copilot requires an active internet connection and GitHub authentication. Make sure you're signed in and have a valid subscription before expecting code suggestions.
+                </div>
+            </div>
+
+            <!-- Project Overview Section -->
+            <div class="section">
+                <h2><span class="icon">🏗️</span>Project Architecture</h2>
+                <p>This quantum-safe web application consists of multiple interconnected services:</p>
+                
+                <div class="architecture">
+                    <div class="service-card">
+                        <h4>🌐 Web Application</h4>
+                        <p>Flask-based quantum-safe web interface</p>
+                    </div>
+                    <div class="service-card">
+                        <h4>🗄️ PostgreSQL DB</h4>
+                        <p>Secure database for quantum-safe keys</p>
+                    </div>
+                    <div class="service-card">
+                        <h4>⚡ Redis Cache</h4>
+                        <p>High-performance caching layer</p>
+                    </div>
+                    <div class="service-card">
+                        <h4>📨 Message Services</h4>
+                        <p>Quantum-safe message exchange (2x)</p>
+                    </div>
+                </div>
+                
+                <div class="quantum-features">
+                    <h3>🔒 Quantum-Safe Algorithms</h3>
+                    <ul>
+                        <li><strong>Kyber768</strong> - Post-quantum key exchange (1,184B public key)</li>
+                        <li><strong>Dilithium3</strong> - Quantum-resistant signatures (1,952B public key)</li>
+                        <li><strong>ChaCha20-Poly1305</strong> - Authenticated encryption</li>
+                        <li><strong>BLAKE2s + SHA-3</strong> - Quantum-resistant hashing</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Compilation & Build Section -->
+            <div class="section">
+                <h2><span class="icon">🔨</span>Compilation & Build</h2>
+                
+                <h3><span class="step-number">1</span>Navigate to Project Directory</h3>
+                <p>Choose the appropriate command for your operating system:</p>
+                
+                <h4>🍎 macOS / Linux</h4>
+                <div class="multi-command">
+<span class="comment"># Navigate to project directory (adjust path as needed)</span>
+cd "/Users/username/QuantumSafeWebApplications"
+
+<span class="comment"># Alternative: Using drag and drop</span>
+# Type 'cd ' (with space), then drag the project folder to terminal
+
+<span class="comment"># Verify you're in the right directory</span>
+ls -la docker-compose.yml
+                </div>
+                
+                <h4>🏢 Windows</h4>
+                <div class="multi-command">
+<span class="comment"># Command Prompt</span>
+cd "C:\Users\username\QuantumSafeWebApplications"
+
+<span class="comment"># PowerShell</span>
+Set-Location "C:\Users\username\QuantumSafeWebApplications"
+
+<span class="comment"># Alternative: Using GUI</span>
+# Open File Explorer, navigate to project folder
+# Shift + Right-click in empty space -> "Open PowerShell window here"
+
+<span class="comment"># Verify you're in the right directory</span>
+dir docker-compose.yml
+                </div>
+                
+                <div class="info-box">
+                    <strong>💡 Pro Tips:</strong><br>
+                    • <strong>macOS:</strong> Use Terminal app (Applications → Utilities → Terminal)<br>
+                    • <strong>Windows:</strong> Use PowerShell (Windows key + X → Windows PowerShell) or WSL for Linux-style commands<br>
+                    • Both platforms: VS Code integrated terminal works great (Terminal → New Terminal)<br>
+                    • <strong>Windows with WSL:</strong> VS Code can open WSL terminal directly (Terminal → New Terminal → Select WSL)
+                </div>
+                
+                <h3><span class="step-number">2</span>Build All Services</h3>
+                <div class="command-block">docker-compose build</div>
+                
+                <div class="info-box">
+                    <strong>📝 What this does:</strong><br>
+                    • Builds the main Flask web application container<br>
+                    • Builds 2 message exchange service containers<br>
+                    • Downloads and prepares PostgreSQL and Redis images<br>
+                    • Installs all Python dependencies and quantum-safe libraries
+                </div>
+                
+                <h3><span class="step-number">3</span>Build with No Cache (Clean Build)</h3>
+                <div class="command-block">docker-compose build --no-cache</div>
+                
+                <div class="warning-box">
+                    <strong>⚠️ Note:</strong> Clean builds take longer but ensure all dependencies are fresh and up-to-date.
+                </div>
+            </div>
+
+            <!-- Deployment Section -->
+            <div class="section">
+                <h2><span class="icon">🚀</span>Deployment & Launch</h2>
+                
+                <h3><span class="step-number">1</span>Deploy All Services</h3>
+                <div class="command-block">docker-compose up -d</div>
+                
+                <div class="info-box">
+                    <strong>✅ This command:</strong><br>
+                    • Builds images if not already built<br>
+                    • Creates and starts all 5 containers<br>
+                    • Sets up internal networking<br>
+                    • Creates persistent data volumes<br>
+                    • Runs in detached mode (background)
+                </div>
+                
+                <h3><span class="step-number">2</span>Deploy with Build (Force Rebuild)</h3>
+                <div class="command-block">docker-compose up -d --build</div>
+                
+                <h3><span class="step-number">3</span>Deploy with Live Logs</h3>
+                <div class="command-block">docker-compose up</div>
+                
+                <div class="warning-box">
+                    <strong>⚠️ Note:</strong> This runs in foreground mode. Press <code>Ctrl+C</code> to stop all services.
+                </div>
+            </div>
+
+            <!-- Monitoring & Verification Section -->
+            <div class="section">
+                <h2><span class="icon">📊</span>Monitoring & Verification</h2>
+                
+                <h3><span class="step-number">1</span>Check Service Status</h3>
+                <p>This command works the same on both platforms:</p>
+                <div class="command-block">docker-compose ps</div>
+                
+                <div class="info-box">
+                    <strong>Expected Services:</strong><br>
+                    <span class="status-indicator status-healthy"></span><strong>quantum-safe-web-app</strong> - Main application<br>
+                    <span class="status-indicator status-healthy"></span><strong>quantum-safe-db</strong> - PostgreSQL database<br>
+                    <span class="status-indicator status-healthy"></span><strong>quantum-safe-redis</strong> - Redis cache<br>
+                    <span class="status-indicator status-healthy"></span><strong>quantum-message-service-1</strong> - Message service 1<br>
+                    <span class="status-indicator status-healthy"></span><strong>quantum-message-service-2</strong> - Message service 2
+                </div>
+                
+                <h3><span class="step-number">2</span>Test Application Health</h3>
+                
+                <h4>🍎 macOS / Linux</h4>
+                <div class="command-block">curl -s http://localhost:5000/health</div>
+                
+                <h4>🏢 Windows</h4>
+                <div class="multi-command">
+<span class="comment"># PowerShell</span>
+Invoke-RestMethod -Uri http://localhost:5000/health
+
+<span class="comment"># Alternative: Using curl (if installed)</span>
+curl.exe -s http://localhost:5000/health
+
+<span class="comment"># Alternative: Using Invoke-WebRequest</span>
+(Invoke-WebRequest -Uri http://localhost:5000/health).Content
+
+<span class="comment"># WSL (Windows Subsystem for Linux)</span>
+wsl curl -s http://localhost:5000/health
+                </div>
+                
+                <div class="multi-command">
+<span class="comment"># Expected response:</span>
+{
+  "quantum_safe": true,
+  "status": "healthy",
+  "timestamp": "2026-02-16T00:06:08.714415"
+}
+                </div>
+                
+                <h3><span class="step-number">3</span>Test Main Application</h3>
+                
+                <h4>🍎 macOS / Linux</h4>
+                <div class="command-block">curl -I http://localhost:5000/</div>
+                
+                <h4>🏢 Windows</h4>
+                <div class="multi-command">
+<span class="comment"># PowerShell</span>
+(Invoke-WebRequest -Uri http://localhost:5000/ -Method Head).Headers
+
+<span class="comment"># Alternative: Using curl (if installed)</span>
+curl.exe -I http://localhost:5000/
+
+<span class="comment"># WSL (if installed)</span>
+wsl curl -I http://localhost:5000/
+
+<span class="comment"># Simple test - open in browser</span>
+start http://localhost:5000
+                </div>
+                
+                <h3><span class="step-number">4</span>View Real-time Logs</h3>
+                <div class="multi-command">
+<span class="comment"># All services</span>
+docker-compose logs -f
+
+<span class="comment"># Specific service</span>
+docker-compose logs -f quantum-safe-web-app
+
+<span class="comment"># Last 100 lines</span>
+docker-compose logs --tail=100
+                </div>
+            </div>
+
+            <!-- Access Points Section -->
+            <div class="section">
+                <h2><span class="icon">🌐</span>Application Access Points</h2>
+                <p>Once deployed, the application provides multiple access points:</p>
+                
+                <div class="url-list">
+                    <ul>
+                        <li><strong>Main Application:</strong> <a href="http://localhost:5000" target="_blank">http://localhost:5000</a></li>
+                        <li><strong>Documentation:</strong> <a href="http://localhost:5000/docs" target="_blank">http://localhost:5000/docs</a></li>
+                        <li><strong>TLS Demo:</strong> <a href="http://localhost:5000/tls" target="_blank">http://localhost:5000/tls</a></li>
+                        <li><strong>Messaging Demo:</strong> <a href="http://localhost:5000/messaging" target="_blank">http://localhost:5000/messaging</a></li>
+                        <li><strong>Algorithm Demo:</strong> <a href="http://localhost:5000/demo" target="_blank">http://localhost:5000/demo</a></li>
+                        <li><strong>Dashboard:</strong> <a href="http://localhost:5000/dashboard" target="_blank">http://localhost:5000/dashboard</a></li>
+                        <li><strong>Health Check:</strong> <a href="http://localhost:5000/health" target="_blank">http://localhost:5000/health</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Management Commands Section -->
+            <div class="section">
+                <h2><span class="icon">⚙️</span>Management Commands</h2>
+                
+                <h3><span class="step-number">1</span>Restart Services</h3>
+                <div class="multi-command">
+<span class="comment"># Restart all services</span>
+docker-compose restart
+
+<span class="comment"># Restart specific service</span>
+docker-compose restart quantum-safe-web-app
+                </div>
+                
+                <h3><span class="step-number">2</span>Scale Message Services</h3>
+                <div class="command-block">docker-compose up -d --scale message-service-1=3</div>
+                
+                <h3><span class="step-number">3</span>Update Application Code</h3>
+                <div class="multi-command">
+<span class="comment"># Update and restart with new code</span>
+docker-compose down
+docker-compose up -d --build
+                </div>
+                
+                <h3><span class="step-number">4</span>Access Container Shell</h3>
+                <div class="multi-command">
+<span class="comment"># Shell into web application</span>
+docker-compose exec quantum-safe-web bash
+
+<span class="comment"># Shell into database</span>
+docker-compose exec postgres psql -U quantum_user -d quantum_safe_db
+                </div>
+                
+                <h3><span class="step-number">5</span>View Resource Usage</h3>
+                <div class="command-block">docker stats</div>
+                
+                <div class="info-box">
+                    <strong>💡 Platform-specific resource monitoring:</strong><br>
+                    • <strong>macOS:</strong> Activity Monitor (Applications → Utilities) shows Docker Desktop resource usage<br>
+                    • <strong>Windows:</strong> Task Manager (Ctrl+Shift+Esc) or Resource Monitor shows Docker Desktop usage<br>
+                    • <strong>Both:</strong> Docker Desktop dashboard provides built-in resource monitoring
+                </div>
+            </div>
+
+            <!-- Backup & Data Management Section -->
+            <div class="section">
+                <h2><span class="icon">💾</span>Backup & Data Management</h2>
+                
+                <h3><span class="step-number">1</span>Backup Database</h3>
+                <div class="command-block">docker-compose exec postgres pg_dump -U quantum_user quantum_safe_db > quantum_backup.sql</div>
+                
+                <h3><span class="step-number">2</span>Backup Application Data</h3>
+                
+                <h4>🍎 macOS / Linux</h4>
+                <div class="multi-command">
+<span class="comment"># Backup certificates and logs</span>
+tar -czf quantum_app_backup.tar.gz ./app/certs ./app/logs
+
+<span class="comment"># Backup Docker volumes</span>
+docker run --rm -v quantumsafewebapplications_postgres_data:/data -v $(pwd):/backup ubuntu tar czf /backup/postgres_volume_backup.tar.gz -C /data .
+                </div>
+                
+                <h4>🏢 Windows</h4>
+                <div class="multi-command">
+<span class="comment"># PowerShell - Backup certificates and logs</span>
+Compress-Archive -Path ".\app\certs", ".\app\logs" -DestinationPath "quantum_app_backup.zip"
+
+<span class="comment"># Backup Docker volumes (PowerShell)</span>
+docker run --rm -v quantumsafewebapplications_postgres_data:/data -v ${PWD}:/backup ubuntu tar czf /backup/postgres_volume_backup.tar.gz -C /data .
+
+<span class="comment"># Alternative: Using 7-zip (if installed)</span>
+7z a quantum_app_backup.7z .\app\certs .\app\logs
+                </div>
+                
+                <h3><span class="step-number">3</span>Restore Database</h3>
+                <div class="command-block">docker-compose exec -T postgres psql -U quantum_user quantum_safe_db < quantum_backup.sql</div>
+            </div>
+
+            <!-- Troubleshooting Section -->
+            <div class="section">
+                <h2><span class="icon">🔧</span>Troubleshooting</h2>
+                
+                <h3>🔍 Common Issues & Solutions</h3>
+                
+                <div class="error-box">
+                    <strong>❌ Issue:</strong> Port already in use<br>
+                    <strong>🔧 Solution:</strong>
+                    
+                    <h4>🍎 macOS / Linux</h4>
+                    <div class="multi-command">
+<span class="comment"># Find and kill process using port 5000</span>
+lsof -ti:5000 | xargs kill -9
+
+<span class="comment"># Alternative: Find process first, then kill</span>
+lsof -i:5000
+sudo kill -9 <PID>
+                    </div>
+                    
+                    <h4>🏢 Windows</h4>
+                    <div class="multi-command">
+<span class="comment"># PowerShell - Find and kill process using port 5000</span>
+$processId = (Get-NetTCPConnection -LocalPort 5000).OwningProcess
+Stop-Process -Id $processId -Force
+
+<span class="comment"># Alternative: Using netstat and taskkill</span>
+netstat -ano | findstr :5000
+taskkill /PID <PID> /F
+
+<span class="comment"># Command Prompt version</span>
+for /f "tokens=5" %a in ('netstat -aon ^| find ":5000" ^| find "LISTENING"') do taskkill /f /pid %a
+                    </div>
+                </div>
+                
+                <div class="error-box">
+                    <strong>❌ Issue:</strong> Database connection failed<br>
+                    <strong>🔧 Solution:</strong>
+                    <div class="multi-command">
+<span class="comment"># Check database status</span>
+docker-compose exec postgres pg_isready -U quantum_user
+
+<span class="comment"># Restart database service</span>
+docker-compose restart postgres
+                    </div>
+                </div>
+                
+                <div class="error-box">
+                    <strong>❌ Issue:</strong> Out of disk space<br>
+                    <strong>🔧 Solution:</strong>
+                    <div class="command-block">docker system prune -a --volumes</div>
+                </div>
+                
+                <h3>🔍 Debug Commands</h3>
+                
+                <h4>🍎 macOS / Linux</h4>
+                <div class="multi-command">
+<span class="comment"># Check container logs for errors</span>
+docker-compose logs --tail=50 quantum-safe-web-app | grep -i error
+
+<span class="comment"># Check disk usage</span>
+docker system df
+
+<span class="comment"># Check system resources</span>
+df -h
+top -o cpu
+
+<span class="comment"># Inspect container configuration</span>
+docker inspect quantum-safe-web-app
+                </div>
+                
+                <h4>🏢 Windows</h4>
+                <div class="multi-command">
+<span class="comment"># PowerShell - Check container logs for errors</span>
+docker-compose logs --tail=50 quantum-safe-web-app | Select-String "error" -CaseSensitive:$false
+
+<span class="comment"># Check disk usage</span>
+docker system df
+
+<span class="comment"># Check system resources (PowerShell)</span>
+Get-WmiObject -Class Win32_LogicalDisk | Select-Object DeviceID, @{Name="Size(GB)";Expression={[math]::Round($_.Size/1GB,2)}}, @{Name="FreeSpace(GB)";Expression={[math]::Round($_.FreeSpace/1GB,2)}}
+Get-Process | Sort-Object CPU -Descending | Select-Object -First 10
+
+<span class="comment"># Inspect container configuration</span>
+docker inspect quantum-safe-web-app
+                </div>
+            </div>
+
+            <!-- Undeployment Section -->
+            <div class="section">
+                <h2><span class="icon">🗑️</span>Undeployment & Cleanup</h2>
+                
+                <h3><span class="step-number">1</span>Stop All Services</h3>
+                <div class="command-block">docker-compose down</div>
+                
+                <h3><span class="step-number">2</span>Complete Cleanup (Remove All Data)</h3>
+                <div class="command-block">docker-compose down -v --remove-orphans</div>
+                
+                <div class="error-box">
+                    <strong>⚠️ WARNING:</strong> This command permanently deletes all data including database content, certificates, and logs.
+                </div>
+                
+                <h3><span class="step-number">3</span>Remove Built Images</h3>
+                <div class="command-block">docker images --filter "reference=quantumsafewebapplications*" -q | xargs -r docker rmi</div>
+                
+                <h3><span class="step-number">4</span>System-wide Docker Cleanup</h3>
+                <div class="multi-command">
+<span class="comment"># Remove dangling resources</span>
+docker system prune -f
+
+<span class="comment"># Remove all unused resources (aggressive cleanup)</span>
+docker system prune -a --volumes
+                </div>
+                
+                <h3><span class="step-number">5</span>Verify Complete Cleanup</h3>
+                
+                <h4>🍎 macOS / Linux</h4>
+                <div class="multi-command">
+<span class="comment"># Check for remaining containers</span>
+docker ps -a --filter "name=quantum"
+
+<span class="comment"># Check application accessibility</span>
+curl -s --connect-timeout 3 http://localhost:5000/health || echo "✅ Successfully undeployed"
+                </div>
+                
+                <h4>🏢 Windows</h4>
+                <div class="multi-command">
+<span class="comment"># Check for remaining containers</span>
+docker ps -a --filter "name=quantum"
+
+<span class="comment"># Check application accessibility (PowerShell)</span>
+try { Invoke-RestMethod -Uri http://localhost:5000/health -TimeoutSec 3 } catch { Write-Host "✅ Successfully undeployed" }
+
+<span class="comment"># Alternative using curl if available</span>
+curl.exe -s --connect-timeout 3 http://localhost:5000/health; if ($LASTEXITCODE -ne 0) { Write-Host "✅ Successfully undeployed" }
+                </div>
+            </div>
+
+            <!-- Quick Reference Section -->
+            <div class="section">
+                <h2><span class="icon">⚡</span>Quick Reference</h2>
+                <p>Essential commands for managing the quantum-safe web application:</p>
+                
+                <h3>🐳 Universal Docker Commands</h3>
+                <p>These commands work identically on both macOS and Windows:</p>
+                <div class="multi-command">
+<span class="comment"># 🚀 Quick Deploy</span>
+docker-compose up -d
+
+<span class="comment"># 📊 Check Status</span>
+docker-compose ps
+
+<span class="comment"># 📝 View Logs</span>
+docker-compose logs -f
+
+<span class="comment"># 🔄 Restart</span>
+docker-compose restart
+
+<span class="comment"># 🛑 Stop</span>
+docker-compose down
+
+<span class="comment"># 🗑️ Complete Cleanup</span>
+docker-compose down -v --remove-orphans
+                </div>
+                
+                <h3>🧹 Platform-Specific Cleanup Commands</h3>
+                
+                <h4>🍎 macOS / Linux</h4>
+                <div class="multi-command">
+<span class="comment"># Remove built images</span>
+docker images --filter "reference=quantumsafewebapplications*" -q | xargs -r docker rmi
+
+<span class="comment"># Health check</span>
+curl http://localhost:5000/health
+
+<span class="comment"># Open application in browser</span>
+open http://localhost:5000
+
+<span class="comment"># Check port usage</span>
+lsof -i:5000
+                </div>
+                
+                <h4>🏢 Windows</h4>
+                <div class="multi-command">
+<span class="comment"># PowerShell - Remove built images</span>
+docker images --filter "reference=quantumsafewebapplications*" -q | ForEach-Object { docker rmi $_ }
+
+<span class="comment"># Health check (PowerShell)</span>
+Invoke-RestMethod -Uri http://localhost:5000/health
+
+<span class="comment"># Alternative health check with curl</span>
+curl.exe http://localhost:5000/health
+
+<span class="comment"># WSL (if installed) - Use Linux commands directly</span>
+wsl docker images --filter "reference=quantumsafewebapplications*" -q | wsl xargs -r docker rmi
+wsl curl http://localhost:5000/health
+
+<span class="comment"># Open application in browser</span>
+start http://localhost:5000
+
+<span class="comment"># Check port usage</span>
+netstat -ano | findstr :5000
+                </div>
+                
+                <h3>📂 Navigation Commands</h3>
+                
+                <h4>🍎 macOS / Linux</h4>
+                <div class="command-block">cd "/path/to/QuantumSafeWebApplications" && ls -la</div>
+                
+                <h4>🏢 Windows</h4>
+                <div class="multi-command">
+<span class="comment"># Command Prompt</span>
+cd "C:\path\to\QuantumSafeWebApplications" && dir
+
+<span class="comment"># PowerShell</span>
+Set-Location "C:\path\to\QuantumSafeWebApplications"; Get-ChildItem
+
+<span class="comment"># WSL (Windows Subsystem for Linux)</span>
+wsl cd "/mnt/c/path/to/QuantumSafeWebApplications" && ls -la
+
+<span class="comment"># Or navigate to WSL home directory</span>
+wsl
+cd ~/QuantumSafeWebApplications && ls -la
+                </div>
+            </div>
+
+            <!-- Environment Variables Section -->
+            <div class="section">
+                <h2><span class="icon">🔧</span>Environment Configuration</h2>
+                <p>Key environment variables used by the application:</p>
+                
+                <div class="multi-command">
+<span class="comment"># Flask Configuration</span>
+FLASK_ENV=development
+FLASK_DEBUG=1
+PYTHONPATH=/app
+
+<span class="comment"># Quantum-Safe Configuration</span>
+OQS_PROVIDER_PATH=/usr/local/lib/ossl-modules/oqsprovider.so
+
+<span class="comment"># Database Configuration</span>
+DATABASE_URL=postgresql://quantum_user:quantum_secure_pass_2024@postgres:5432/quantum_safe_db
+POSTGRES_DB=quantum_safe_db
+POSTGRES_USER=quantum_user
+POSTGRES_PASSWORD=quantum_secure_pass_2024
+                </div>
+                
+                <div class="info-box">
+                    <strong>📝 Note:</strong> These values are configured in <code>docker-compose.yml</code> and should be changed for production deployments.
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🔐 Quantum-Safe Web Application Deployment Guide</p>
+            <p>Generated on February 16, 2026 | Ready for Post-Quantum Era</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">
+                Cross-Platform Support: 🍎 macOS • 🏢 Windows • 🐧 Linux
+            </p>
+        </div>
+    </div>
+</body>
+</html>

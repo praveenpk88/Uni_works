@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}Quantum-Safe Web Application - Home{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <h1 class="display-4 fw-bold mb-4">
+                <i class="bi bi-shield-lock text-primary"></i>
+                Quantum-Safe Cryptography
+            </h1>
+            <p class="lead text-muted mb-4">
+                Experience the future of cybersecurity with post-quantum cryptographic algorithms. 
+                Protect your data against both classical and quantum computer attacks.
+            </p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                <a href="/demo" class="btn btn-primary btn-lg px-4 me-md-2">
+                    <i class="bi bi-play-circle"></i> Try Demo
+                </a>
+                <a href="/tls" class="btn btn-warning btn-lg px-4 me-md-2">
+                    <i class="bi bi-shield-lock"></i> TLS Demo
+                </a>
+                <a href="/messaging" class="btn btn-success btn-lg px-4 me-md-2">
+                    <i class="bi bi-chat-dots"></i> Messaging
+                </a>
+                <a href="/dashboard" class="btn btn-outline-primary btn-lg px-4 me-md-2">
+                    <i class="bi bi-graph-up"></i> Dashboard
+                </a>
+                <a href="/docs" class="btn btn-outline-secondary btn-lg px-4">
+                    <i class="bi bi-book"></i> Docs
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-quantum h-100">
+                <div class="card-body text-center">
+                    <div class="feature-icon bg-primary bg-gradient text-white rounded-3 mb-3 mx-auto" style="width: 3rem; height: 3rem; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-key fs-4"></i>
+                    </div>
+                    <h5 class="card-title">Key Encapsulation</h5>
+                    <p class="card-text">
+                        Secure key exchange using quantum-resistant algorithms like Kyber, 
+                        protecting against Shor's algorithm attacks.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-quantum h-100">
+                <div class="card-body text-center">
+                    <div class="feature-icon bg-success bg-gradient text-white rounded-3 mb-3 mx-auto" style="width: 3rem; height: 3rem; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-pen fs-4"></i>
+                    </div>
+                    <h5 class="card-title">Digital Signatures</h5>
+                    <p class="card-text">
+                        Quantum-safe digital signatures using algorithms like Dilithium and Falcon 
+                        for authentic and non-repudiable communications.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-quantum h-100">
+                <div class="card-body text-center">
+                    <div class="feature-icon bg-warning bg-gradient text-white rounded-3 mb-3 mx-auto" style="width: 3rem; height: 3rem; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-globe fs-4"></i>
+                    </div>
+                    <h5 class="card-title">Secure TLS</h5>
+                    <p class="card-text">
+                        Post-quantum TLS implementation ensuring secure web communications 
+                        resistant to quantum computer attacks.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-quantum h-100">
+                <div class="card-body text-center">
+                    <div class="feature-icon bg-info bg-gradient text-white rounded-3 mb-3 mx-auto" style="width: 3rem; height: 3rem; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-chat-dots fs-4"></i>
+                    </div>
+                    <h5 class="card-title">Secure Messaging</h5>
+                    <p class="card-text">
+                        Real-time encrypted communication between services using 
+                        quantum-safe algorithms for message exchange.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-quantum h-100">
+                <div class="card-body text-center">
+                    <div class="feature-icon bg-secondary bg-gradient text-white rounded-3 mb-3 mx-auto" style="width: 3rem; height: 3rem; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-network-wired fs-4"></i>
+                    </div>
+                    <h5 class="card-title">Service-to-Service</h5>
+                    <p class="card-text">
+                        Demonstrate secure microservice communication with 
+                        post-quantum key exchange and message encryption.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Algorithm Status -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card card-quantum">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-cpu"></i> Supported Quantum-Safe Algorithms
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row" id="algorithm-status">
+                        <div class="col-md-6">
+                            <h6><i class="bi bi-shield-lock"></i> Key Encapsulation Mechanisms</h6>
+                            <div id="kem-algorithms" class="mb-3">
+                                <div class="spinner-border spinner-border-sm" role="status"></div>
+                                Loading algorithms...
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="bi bi-pen-fill"></i> Digital Signature Schemes</h6>
+                            <div id="sig-algorithms">
+                                <div class="spinner-border spinner-border-sm" role="status"></div>
+                                Loading algorithms...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Load supported algorithms on page load
+document.addEventListener('DOMContentLoaded', async function() {
+    try {
+        const algorithms = await apiCall('/api/algorithms');
+        
+        if (algorithms.error) {
+            throw new Error(algorithms.error);
+        }
+
+        // Display KEM algorithms
+        const kemContainer = document.getElementById('kem-algorithms');
+        if (algorithms.key_encapsulation_mechanisms && algorithms.key_encapsulation_mechanisms.length > 0) {
+            kemContainer.innerHTML = algorithms.key_encapsulation_mechanisms
+                .slice(0, 10) // Show first 10 algorithms
+                .map(algo => `<span class="badge bg-primary me-1 mb-1 algorithm-badge">${algo}</span>`)
+                .join('') + 
+                (algorithms.key_encapsulation_mechanisms.length > 10 ? 
+                    `<span class="badge bg-secondary">+${algorithms.key_encapsulation_mechanisms.length - 10} more</span>` : '');
+        } else {
+            kemContainer.innerHTML = '<span class="text-muted">No algorithms available</span>';
+        }
+
+        // Display Signature algorithms
+        const sigContainer = document.getElementById('sig-algorithms');
+        if (algorithms.digital_signatures && algorithms.digital_signatures.length > 0) {
+            sigContainer.innerHTML = algorithms.digital_signatures
+                .slice(0, 10) // Show first 10 algorithms
+                .map(algo => `<span class="badge bg-success me-1 mb-1 algorithm-badge">${algo}</span>`)
+                .join('') + 
+                (algorithms.digital_signatures.length > 10 ? 
+                    `<span class="badge bg-secondary">+${algorithms.digital_signatures.length - 10} more</span>` : '');
+        } else {
+            sigContainer.innerHTML = '<span class="text-muted">No algorithms available</span>';
+        }
+
+    } catch (error) {
+        console.error('Failed to load algorithms:', error);
+        document.getElementById('kem-algorithms').innerHTML = 
+            '<span class="text-danger"><i class="bi bi-exclamation-triangle"></i> Failed to load</span>';
+        document.getElementById('sig-algorithms').innerHTML = 
+            '<span class="text-danger"><i class="bi bi-exclamation-triangle"></i> Failed to load</span>';
+    }
+});
+</script>
+{% endblock %}
