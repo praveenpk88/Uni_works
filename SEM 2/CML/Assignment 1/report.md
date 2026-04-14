@@ -152,34 +152,10 @@ A consistent preprocessing pipeline was applied across Linear, Ridge, and Lasso 
 - Scikit-learn Documentation: https://scikit-learn.org/
 
 ## 15. GenAI Usage Statement
-I used GitHub Copilot Chat (VS Code) on 11 Apr 2026 to assist with debugging, explanations, and drafting. Prompts used and example outputs are listed below (paraphrased from this chat log).
+I used GitHub Copilot Chat (VS Code) on 11 Apr 2026 to assist with debugging, explanations, and drafting. Prompts used (exact text) are listed below.
 
-**Prompt 1:**
-"please resolve the error"
-
-**Example output used:**
-"Install numpy, pandas, seaborn, matplotlib, and scikit-learn in the notebook kernel and re-run the import cell."
-
-**Prompt 2:**
-"display(train_df.isna().sum()[train_df.isna().sum() > 0]) these 2 doesn't print anything properly"
-
-**Example output used:**
-"If the filtered missing-value Series is empty, print a message; otherwise display the missing-count table."
-
-**Prompt 3:**
-"review the entire notebook with the provided spec and rubric marking"
-
-**Example output used:**
-"Identify missing narrative sections (task definition, dataset overview, EDA interpretation, preprocessing rationale, model evaluation notes, ethics/limitations, references) and add them to the notebook."
-
-**Prompt 4:**
-"please do all the 3"
-
-**Example output used:**
-"Run the notebook, compute summary statistics, and update the EDA narrative using actual outputs."
-
-**Prompt 5:**
-"can you please create the report"
-
-**Example output used:**
-"Draft a report with the required sections (task definition, dataset description, EDA, preprocessing, models, evaluation, error analysis, ethics, conclusion, references)."
+- please resolve the error
+- display(train_df.isna().sum()[train_df.isna().sum() > 0]) these 2 doesn't print anything properly
+- review  the entire notebook with the provided spec and rubric marking. check for completion and marking the assignment and let me know how much i'll get.
+- please do all the 3,
+- can you please create  the report,

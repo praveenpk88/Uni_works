@@ -281,6 +281,177 @@ assert pred_df.columns.tolist() == ['price']
 
 ---
 
+## 4.8 Step-by-step explanation (beginner-friendly)
+
+Use this as a plain-English guide for why each block exists and what the outputs mean.
+
+### Imports and setup
+- **Why**: Load tools for data handling, plotting, preprocessing, modeling, and evaluation.
+- **How**: Import the libraries and set a fixed seed (`RANDOM_STATE = 42`) for reproducibility.
+- **Output**: No output; it prepares your environment.
+
+### Load data and inspect
+- **Why**: Confirm files load correctly and check basic structure.
+- **How**: `read_csv` loads the data, `shape` shows rows/columns, `head()` previews records, `dtypes` shows column types.
+- **Output**: Shapes printed, a small sample table, and a list of data types.
+
+### Summary stats and missing values
+- **Why**: Understand distributions and detect missing data.
+- **How**: `describe(include='all')` summarizes numeric and categorical columns; missing-value check lists only columns with NaNs.
+- **Output**: A stats table and either an empty missing-value list or a list of columns with missing values.
+
+### Missingness profile plot
+- **Why**: Visualize where missing data concentrates.
+- **How**: Count missing values per feature and plot a bar chart if any exist.
+- **Output**: A bar chart of missing counts, or a message saying there are none.
+
+### Define features and target
+- **Why**: Separate inputs (`X`) from the target (`y`) and identify categorical vs numeric features.
+- **How**: Drop `price` from inputs; use dtypes to split feature lists.
+- **Output**: Printed lists of categorical and numeric columns.
+
+### Target distribution plots
+- **Why**: Check if the target is skewed or has outliers.
+- **How**: Histogram + boxplot of `price`.
+- **Output**: A histogram (shape of distribution) and a boxplot (outliers and spread).
+
+### Correlation heatmap
+- **Why**: See which numeric features move together and which relate to price.
+- **How**: Compute correlations for numeric columns and plot a heatmap.
+- **Output**: A heatmap; warmer colors indicate stronger positive relationships. This is correlation, not causation.
+
+### Split, preprocess, evaluate
+- **Why**: Avoid leakage and ensure fair model evaluation.
+- **How**: 80/20 split, preprocessing pipeline for numeric/categorical columns, define metrics and evaluation helper.
+- **Output**: No immediate output; it prepares the pipeline and evaluation logic.
+
+### Train 3 models
+- **Why**: Compare multiple linear models as required by the brief.
+- **How**: Fit Linear Regression, then scan Ridge/Lasso over alpha values.
+- **Output**: Tables of validation and CV metrics; best alpha identified by lowest validation RMSE.
+
+### Compare, select, analyze
+- **Why**: Choose the best model and interpret error patterns.
+- **How**: Combine results, select the lowest validation RMSE, plot residuals, and inspect coefficients.
+- **Output**: Comparison table, selected model message, residual plot, and top positive/negative coefficients.
+
+### Final training and prediction export
+- **Why**: Train on full data and generate test predictions for submission.
+- **How**: Fit the final pipeline on all training data and predict `test_df`.
+- **Output**: A CSV file named `{student_number}_predictions.csv` with one column `price`. Assertions confirm format and row count.
+
+---
+
+## 4.9 Line-by-line code explanations (beginner-friendly)
+
+Use this when you want to explain every line in simple terms.
+
+### Imports and setup
+- `warnings.filterwarnings('ignore')`: hides non-critical warnings to keep outputs readable.
+- `numpy`/`pandas`: numeric and table operations.
+- `seaborn`/`matplotlib`: plotting.
+- `ColumnTransformer`, `Pipeline`: apply different preprocessing to different columns in one object.
+- `SimpleImputer`: fills missing values so models do not crash.
+- `OneHotEncoder`: turns categories into numeric columns.
+- `StandardScaler`: puts numeric features on comparable scales.
+- `train_test_split`, `KFold`, `cross_validate`: data splitting and evaluation.
+- `LinearRegression`, `Ridge`, `Lasso`: required linear models (Week 1-4).
+- `mean_absolute_error`, `mean_squared_error`, `r2_score`: evaluation metrics.
+- `RANDOM_STATE = 42`: ensures the same split each run.
+- `sns.set_theme(...)`: controls plot appearance only.
+
+### Load data and inspect
+- `pd.read_csv(...)`: load CSV files into DataFrames.
+- `shape`: confirms rows/columns and catches file issues.
+- `head()`: sanity-check data.
+- `dtypes`: decide which columns are numeric vs categorical.
+- `describe(include='all')`: distribution statistics for numeric + frequency summaries for categorical.
+- `isna().sum()`: missing-value counts per column.
+
+### Missingness profile
+- `sort_values(ascending=False)`: show most-missing columns first.
+- `missing_counts[missing_counts > 0]`: filter to only missing columns.
+- Plot or message: visualize missingness if present.
+
+### Feature/target split
+- `X = train_df.drop(columns=['price'])`: inputs only.
+- `y = train_df['price']`: target only.
+- `select_dtypes(...)`: split categorical vs numeric features.
+
+### Target distribution plots
+- `histplot(...)`: shows overall distribution and skew.
+- `boxplot(...)`: highlights outliers and spread.
+
+### Correlation heatmap
+- `corr(...)`: compute numeric correlations.
+- `heatmap(...)`: visualize which features co-move with price (not causal).
+
+### Train/validation split
+- `train_test_split(..., test_size=0.2)`: hold-out 20% for validation.
+
+### Preprocessing pipeline
+- Numeric pipeline: median imputation + scaling.
+- Categorical pipeline: most-frequent imputation + one-hot encoding.
+- `ColumnTransformer`: applies both in parallel.
+
+### Evaluation utilities
+- `metrics(...)`: returns MAE, RMSE, R2 in one place.
+- `evaluate(...)`: trains model, computes validation metrics, and CV metrics.
+
+### Ridge/Lasso tuning
+- `np.logspace(...)`: tests alpha across orders of magnitude.
+- `ridge_df`/`lasso_df`: results table sorted by best validation RMSE.
+- Plot: use alpha-sorted values so the curve is readable.
+
+### Model selection + diagnostics
+- `comparison`: side-by-side model metrics.
+- `selected_estimator`: choose best model by validation RMSE.
+- Residual plot: check bias and error spread.
+- Coefficients: interpret strongest positive/negative features (with caution).
+
+### Final predictions
+- Fit on all training data, predict test set.
+- `np.clip(..., a_min=0)`: avoid negative prices.
+- Save CSV and assert row/column correctness.
+
+---
+
+## 4.10 Oral defense: questions you should be ready to answer
+
+Use these as quick answers if asked "why" during a discussion.
+
+### Task and data
+- **Why regression?** Target `price` is continuous.
+- **Why these features?** Provided by the brief; they cover location, listing, and host info.
+- **Any missing values?** Check shows none; imputation stays for robustness.
+
+### Splitting and evaluation
+- **Why 80/20 split?** Standard balance between training data and validation reliability.
+- **Why cross-validation?** Ensures performance is not a fluke from one split.
+- **Why MAE/RMSE/R2?** MAE is interpretable, RMSE penalizes large errors, R2 summarizes explained variance.
+
+### Preprocessing
+- **Why impute?** Models cannot handle NaNs; ensures pipeline stability.
+- **Why median for numeric?** Robust to outliers and skew.
+- **Why most-frequent for categorical?** Simple and consistent when missingness is low.
+- **Why one-hot encode?** Linear models require numeric inputs; avoids false ordering.
+- **Why standardize?** Ridge/Lasso are scale-sensitive; scaling makes regularization fair.
+
+### Models and tuning
+- **Why Linear/Ridge/Lasso?** Week 1-4 allowed methods; good baseline + regularized variants.
+- **Why tune alpha?** Controls bias-variance; select best validation RMSE.
+- **Why log-spaced alphas?** Regularization strength spans orders of magnitude.
+
+### Diagnostics
+- **Why residual plot?** Detect bias, nonlinearity, and heteroscedasticity.
+- **Why coefficients?** Provide interpretable feature direction/magnitude (with caution).
+
+### Output
+- **Why clip predictions at 0?** Prices cannot be negative.
+- **Why assert checks?** Ensure CSV matches submission format.
+
+---
+
 ## 5) What To Write In Markdown (Inside Notebook)
 
 For each section, explain:
