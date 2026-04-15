@@ -342,6 +342,42 @@ Use this as a plain-English guide for why each block exists and what the outputs
 
 ---
 
+## 4.9 Example interpretations and justifications (use in viva/defense)
+
+Use this section to answer “what does this output mean” and “why did you do it this way.” Values are from this dataset and should be very similar when you re-run.
+
+### EDA interpretation (example)
+- **Shape**: Train has 8,586 rows and 16 columns; test has 8,585 rows and 15 columns.
+- **Price distribution**: Strong right skew with many low prices and a long high-price tail. Boxplot shows clear outliers.
+- **Percentiles (typical)**: 25% ≈ 71, median ≈ 115, 75% ≈ 162.8, 95% ≈ 320, 99% ≈ 599, max = 3000.
+- **Why this matters**: Skew and outliers justify using both MAE (average error) and RMSE (penalizes large errors).
+- **Correlation heatmap**: Capacity/room features (accommodates, bedrooms, bathrooms, beds) correlate most with price; review metrics are weaker.
+
+### Preprocessing rationale (example)
+- **Why impute if no missing values?** Future data or test data may contain missing values; the pipeline is robust by design.
+- **Why median imputation?** Median is more stable under skew/outliers than mean.
+- **Why one-hot encode?** Linear models require numeric inputs and one-hot avoids imposing a false order.
+- **Why standardize?** Ridge/Lasso shrink coefficients; scaling ensures each feature is treated fairly.
+
+### Model tuning and alpha plots (example)
+- **Ridge/Lasso alpha plots**: RMSE is flat at small alpha, improves slightly at a mid-range, then worsens when alpha is too large.
+- **Why log scale for alpha?** Regularization strength spans orders of magnitude; log scale reveals the curve clearly.
+- **Why sort by alpha for plotting?** The results table is sorted by RMSE for selection, but plotting must follow alpha order to avoid a jagged, misleading line.
+- **Chosen alphas (typical)**: Ridge ≈ 31.6; Lasso ≈ 0.15.
+
+### Residuals and feature importance (example)
+- **Residual plot**: Residuals center near 0, but spread increases for higher predicted prices, indicating heteroscedasticity and weaker performance on expensive listings.
+- **Top positive drivers**: bedrooms, accommodates, bathrooms, room_type = entire home/apt (consistent with larger/entire properties costing more).
+- **Top negative drivers**: shared/private room indicators, and sometimes number_of_reviews (can reflect budget listings).
+- **Why caution?** One-hot encoding and correlated features can make coefficients unstable; interpret directions, not causality.
+
+### Submission checks (example)
+- **Output file**: `{student_number}_predictions.csv` with a single column `price`.
+- **Row count**: 8,585 predictions (must match test set rows).
+- **Value sanity**: Min near 0, max in the low-thousands; negative values are clipped to 0.
+
+---
+
 ## 4.9 Line-by-line code explanations (beginner-friendly)
 
 Use this when you want to explain every line in simple terms.
