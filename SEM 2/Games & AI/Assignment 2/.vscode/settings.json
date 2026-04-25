@@ -67,5 +67,5 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "gait2610-a2-s4163448_-s4182454_-s4174070.slnx"
+    "dotnet.defaultSolution": "Assignment 2.slnx"
 }

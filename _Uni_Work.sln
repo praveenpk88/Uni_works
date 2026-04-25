@@ -1,0 +1,35 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SEM 2", "SEM 2", "{7CD2447A-83CE-49C2-5D6A-A0B25007F042}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GAMES & AI", "GAMES & AI", "{572CDCD4-F55B-8539-C7E1-57170BF6A62B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assignment 2", "Assignment 2", "{8CD0DF1B-2344-B6E5-AA03-86A716BE9A88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "SEM 2\GAMES & AI\Assignment 2\Assembly-CSharp.csproj", "{5F4234A1-2976-0128-ABD7-3D4D406FDC38}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5F4234A1-2976-0128-ABD7-3D4D406FDC38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F4234A1-2976-0128-ABD7-3D4D406FDC38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F4234A1-2976-0128-ABD7-3D4D406FDC38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F4234A1-2976-0128-ABD7-3D4D406FDC38}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{572CDCD4-F55B-8539-C7E1-57170BF6A62B} = {7CD2447A-83CE-49C2-5D6A-A0B25007F042}
+		{8CD0DF1B-2344-B6E5-AA03-86A716BE9A88} = {572CDCD4-F55B-8539-C7E1-57170BF6A62B}
+		{5F4234A1-2976-0128-ABD7-3D4D406FDC38} = {8CD0DF1B-2344-B6E5-AA03-86A716BE9A88}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {21C1CA85-B583-48A9-9768-98A36F3AF75A}
+	EndGlobalSection
+EndGlobal
