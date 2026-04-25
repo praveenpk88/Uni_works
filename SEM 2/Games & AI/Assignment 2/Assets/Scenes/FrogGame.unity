@@ -455,6 +455,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1016879730904951504, guid: ee63d98bc87f46d468edf7be29352e6c, type: 3}
+      propertyPath: Pathfinder
+      value: 
+      objectReference: {fileID: 1267821978}
+    - target: {fileID: 1016879730904951504, guid: ee63d98bc87f46d468edf7be29352e6c, type: 3}
       propertyPath: SteeringType
       value: 1
       objectReference: {fileID: 0}
@@ -1521,7 +1525,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1265518378}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
