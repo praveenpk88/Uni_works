@@ -132,10 +132,6 @@ PrefabInstance:
       value: Fly10
       objectReference: {fileID: 0}
     - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -267,10 +263,6 @@ PrefabInstance:
       value: Fly5
       objectReference: {fileID: 0}
     - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -334,10 +326,6 @@ PrefabInstance:
     - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
       propertyPath: m_Name
       value: Fly8
-      objectReference: {fileID: 0}
-    - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
-      propertyPath: m_Layer
-      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
       propertyPath: m_IsActive
@@ -404,10 +392,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Fly1
       objectReference: {fileID: 0}
-    - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
     - target: {fileID: 7225845626754435734, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -470,10 +454,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1016879730904951504, guid: ee63d98bc87f46d468edf7be29352e6c, type: 3}
-      propertyPath: Pathfinder
-      value: 
-      objectReference: {fileID: 1267821978}
     - target: {fileID: 1016879730904951504, guid: ee63d98bc87f46d468edf7be29352e6c, type: 3}
       propertyPath: SteeringType
       value: 1
@@ -648,7 +628,7 @@ GameObject:
   m_Component:
   - component: {fileID: 514457505}
   - component: {fileID: 514457504}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Flock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -820,10 +800,6 @@ PrefabInstance:
       value: Fly12
       objectReference: {fileID: 0}
     - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -887,10 +863,6 @@ PrefabInstance:
     - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
       propertyPath: m_Name
       value: Fly2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
-      propertyPath: m_Layer
-      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7225845626754435734, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
       propertyPath: m_RootOrder
@@ -1018,10 +990,6 @@ PrefabInstance:
     - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
       propertyPath: m_Name
       value: Fly3
-      objectReference: {fileID: 0}
-    - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
-      propertyPath: m_Layer
-      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
       propertyPath: m_IsActive
@@ -1217,7 +1185,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 931395522}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Rocks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1254,7 +1222,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 949006793}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Trees
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1298,10 +1266,6 @@ PrefabInstance:
     - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
       propertyPath: m_Name
       value: Fly9
-      objectReference: {fileID: 0}
-    - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
-      propertyPath: m_Layer
-      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
       propertyPath: m_IsActive
@@ -1367,10 +1331,6 @@ PrefabInstance:
     - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
       propertyPath: m_Name
       value: Fly7
-      objectReference: {fileID: 0}
-    - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
-      propertyPath: m_Layer
-      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
       propertyPath: m_IsActive
@@ -1561,7 +1521,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1265518378}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1583,86 +1543,6 @@ Transform:
   m_Children:
   - {fileID: 2026019339}
   - {fileID: 1980663087}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1267821977
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1267821979}
-  - component: {fileID: 1267821978}
-  m_Layer: 0
-  m_Name: Pathfinder
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1267821978
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1267821977}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2492c52caa954b74a9e8a47ceceb81fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AStarGrid
-  showGridGizmos: 1
-  showTerrainGizmos: 1
-  showPathGizmos: 1
-  lastPath: []
-  terrainCosts:
-  - type: 0
-    cost: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - type: 1
-    cost: 3
-    color: {r: 0.5, g: 0.25, b: 0, a: 1}
-  - type: 2
-    cost: 5
-    color: {r: 0, g: 0, b: 1, a: 1}
-  - type: 3
-    cost: 2
-    color: {r: 0, g: 1, b: 0, a: 1}
-  mudMask:
-    serializedVersion: 2
-    m_Bits: 8
-  waterMask:
-    serializedVersion: 2
-    m_Bits: 16
-  grassMask:
-    serializedVersion: 2
-    m_Bits: 128
-  gridWorldSize: {x: 40, y: 40}
-  nodeRadius: 0.5
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 64
-  dynamicObstacleMask:
-    serializedVersion: 2
-    m_Bits: 256
-  allowDiagonal: 1
-  heuristicType: 0
---- !u!4 &1267821979
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1267821977}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1350182795 stripped
@@ -1752,10 +1632,6 @@ PrefabInstance:
     - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
       propertyPath: m_Name
       value: Fly6
-      objectReference: {fileID: 0}
-    - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
-      propertyPath: m_Layer
-      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
       propertyPath: m_IsActive
@@ -1920,10 +1796,6 @@ PrefabInstance:
       value: Fly11
       objectReference: {fileID: 0}
     - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -2072,7 +1944,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1980663087}
   - component: {fileID: 1980663088}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: MudPatch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2218,7 +2090,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2026019339}
   - component: {fileID: 2026019338}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: MudPatch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2315,10 +2187,6 @@ PrefabInstance:
     - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
       propertyPath: m_Name
       value: Fly4
-      objectReference: {fileID: 0}
-    - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
-      propertyPath: m_Layer
-      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7225845626472838100, guid: 578233333a3faab40a9eca7bf269e874, type: 3}
       propertyPath: m_IsActive
@@ -2445,10 +2313,6 @@ PrefabInstance:
     - target: {fileID: 323289915010762860, guid: 2b605bbbcfba86a40a9edd116f0468b6, type: 3}
       propertyPath: m_Name
       value: Snake1
-      objectReference: {fileID: 0}
-    - target: {fileID: 323289915010762860, guid: 2b605bbbcfba86a40a9edd116f0468b6, type: 3}
-      propertyPath: m_Layer
-      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 323289915010762860, guid: 2b605bbbcfba86a40a9edd116f0468b6, type: 3}
       propertyPath: m_IsActive
@@ -2719,4 +2583,3 @@ SceneRoots:
   - {fileID: 931395522}
   - {fileID: 949006793}
   - {fileID: 1641520818}
-  - {fileID: 1267821979}

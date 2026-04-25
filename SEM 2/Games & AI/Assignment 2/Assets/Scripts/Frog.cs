@@ -97,7 +97,8 @@ public class Frog : MonoBehaviour
 
             if (Pathfinder != null)
             {
-                _currentPath = Pathfinder.FindPath(transform.position, clickPos, AStarGrid.HeuristicType.Euclidean, true, true);
+                // Use the heuristicType selected in the Inspector and disable smoothing for visualization
+                _currentPath = Pathfinder.FindPath(transform.position, clickPos, Pathfinder.heuristicType, false, true);
                 _pathIndex = 0;
                 if (_currentPath == null || _currentPath.Count == 0)
                 {
@@ -113,8 +114,23 @@ public class Frog : MonoBehaviour
                 _lastClickPos = clickPos;
             }
         }
-        else // show the relevant info about fly and snake
+        else
         {
+            // Check if the current path is blocked by a dynamic obstacle
+            if (_currentPath != null && _currentPath.Count > 0 && Pathfinder != null)
+            {
+                foreach (var point in _currentPath)
+                {
+                    if (Physics2D.OverlapCircle(point, Pathfinder.nodeRadius * 0.9f, Pathfinder.dynamicObstacleMask))
+                    {
+                        // Recreate the grid and recalculate the path
+                        Pathfinder.CreateGrid();
+                        _currentPath = Pathfinder.FindPath(transform.position, _currentPath[_currentPath.Count - 1], Pathfinder.heuristicType, false, true);
+                        _pathIndex = 0;
+                        break;
+                    }
+                }
+            }
             if (closestFly != null)
                 Debug.DrawLine(transform.position, closestFly.transform.position, Color.black);
             if (closestSnake != null)

@@ -32,6 +32,8 @@ public class AStarGrid : MonoBehaviour
     public Vector2 gridWorldSize = new Vector2(20f, 20f);
     public float nodeRadius = 0.5f;
     public LayerMask obstacleMask;
+    [Header("Dynamic Obstacles")]
+    public LayerMask dynamicObstacleMask;
     public bool allowDiagonal = true;
 
     public enum HeuristicType { Euclidean, Manhattan, Octile }
@@ -61,7 +63,8 @@ public class AStarGrid : MonoBehaviour
             for (int y = 0; y < gridSizeY; y++)
             {
                 Vector2 worldPoint = worldBottomLeft + new Vector2(x * nodeDiameter + nodeRadius, y * nodeDiameter + nodeRadius);
-                bool walkable = Physics2D.OverlapCircle(worldPoint, nodeRadius * 0.9f, obstacleMask) == null;
+                bool walkable = Physics2D.OverlapCircle(worldPoint, nodeRadius * 0.9f, obstacleMask) == null
+                                 && Physics2D.OverlapCircle(worldPoint, nodeRadius * 0.9f, dynamicObstacleMask) == null;
                 TerrainType terrain = TerrainType.Normal;
                 if (Physics2D.OverlapCircle(worldPoint, nodeRadius * 0.9f, mudMask)) terrain = TerrainType.Mud;
                 else if (Physics2D.OverlapCircle(worldPoint, nodeRadius * 0.9f, waterMask)) terrain = TerrainType.Water;
