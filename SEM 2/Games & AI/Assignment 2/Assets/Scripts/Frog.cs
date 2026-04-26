@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 using SteeringCalcs;
 using Globals;
 
@@ -45,12 +45,17 @@ public class Frog : MonoBehaviour
     private float distanceToClosestSnake;
     public float anchorWeight;
     public Vector2 AnchorDims;
-    
-    // Pathfinding
-    public AStarGrid Pathfinder;
-    private List<Vector2> _currentPath;
-    private int _pathIndex = 0;
+
+    [Header("A* Movement")]
     public float waypointTolerance = 0.2f;
+    public float dynamicRepathInterval = 0.2f;
+    public bool drawPathDebugLines = true;
+    public bool allowDirectFallbackWhenNoPath = true;
+
+    private Node[] _currentPath;
+    private int _pathIndex;
+    private Vector2? _pathGoal;
+    private float _nextDynamicRepathTime;
 
 
 
@@ -74,10 +79,10 @@ public class Frog : MonoBehaviour
 
         _lastClickPos = null;
         _arriveRadius = MinArriveRadius;
-        if (Pathfinder == null)
-            Pathfinder = Object.FindFirstObjectByType<AStarGrid>();
         _currentPath = null;
         _pathIndex = 0;
+        _pathGoal = null;
+        _nextDynamicRepathTime = 0f;
 
     }
 
@@ -87,50 +92,20 @@ public class Frog : MonoBehaviour
         // Check if the player right-clicked (mouse button #1).
         if (ClickMoveAction.WasPressedThisFrame())
         {
-            Vector2 clickPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            _lastClickPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 
             // Set the arrival radius dynamically.
-            _arriveRadius = Mathf.Clamp(ArrivePct * (clickPos - (Vector2)transform.position).magnitude, MinArriveRadius, MaxArriveRadius);
+            _arriveRadius = Mathf.Clamp(ArrivePct * ((Vector2)_lastClickPos - (Vector2)transform.position).magnitude, MinArriveRadius, MaxArriveRadius);
 
-            _flag.position = clickPos + new Vector2(0.55f, 0.55f);
+            _flag.position = (Vector2)_lastClickPos + new Vector2(0.55f, 0.55f);
             _flagSr.enabled = true;
 
-            if (Pathfinder != null)
-            {
-                // Use the heuristicType selected in the Inspector and disable smoothing for visualization
-                _currentPath = Pathfinder.FindPath(transform.position, clickPos, Pathfinder.heuristicType, false, true);
-                _pathIndex = 0;
-                if (_currentPath == null || _currentPath.Count == 0)
-                {
-                    _lastClickPos = clickPos;
-                }
-                else
-                {
-                    _lastClickPos = null;
-                }
-            }
-            else
-            {
-                _lastClickPos = clickPos;
-            }
+            RequestPathTo((Vector2)_lastClickPos);
         }
-        else
+        else // show the relevant info about fly and snake
         {
-            // Check if the current path is blocked by a dynamic obstacle
-            if (_currentPath != null && _currentPath.Count > 0 && Pathfinder != null)
-            {
-                foreach (var point in _currentPath)
-                {
-                    if (Physics2D.OverlapCircle(point, Pathfinder.nodeRadius * 0.9f, Pathfinder.dynamicObstacleMask))
-                    {
-                        // Recreate the grid and recalculate the path
-                        Pathfinder.CreateGrid();
-                        _currentPath = Pathfinder.FindPath(transform.position, _currentPath[_currentPath.Count - 1], Pathfinder.heuristicType, false, true);
-                        _pathIndex = 0;
-                        break;
-                    }
-                }
-            }
+            TryRecalculatePathForDynamicObstacles();
+
             if (closestFly != null)
                 Debug.DrawLine(transform.position, closestFly.transform.position, Color.black);
             if (closestSnake != null)
@@ -190,17 +165,20 @@ public class Frog : MonoBehaviour
     //Gameplay: tweak speed, range, acceleration and anchoring
     private Vector2 decideMovement()
     {
-        if (_currentPath != null && _pathIndex < _currentPath.Count)
+        if (_currentPath != null && _pathIndex < _currentPath.Length)
         {
             return getVelocityAlongPath();
         }
 
-        if (_lastClickPos != null)
+        if (allowDirectFallbackWhenNoPath && _lastClickPos != null)
         {
-            return getVelocityTowardsFlag();
+            return (getVelocityTowardsFlag());
         }
 
-        return Vector2.zero;
+        else
+        {
+            return (Vector2.zero);
+        }
     }
 
     private Vector2 getVelocityTowardsFlag()
@@ -228,31 +206,93 @@ public class Frog : MonoBehaviour
 
     private Vector2 getVelocityAlongPath()
     {
-        Vector2 desiredVel = Vector2.zero;
-        if (_currentPath == null || _pathIndex >= _currentPath.Count)
-            return desiredVel;
-
-        Vector2 waypoint = _currentPath[_pathIndex];
-        if (((Vector2)transform.position - waypoint).magnitude > Mathf.Max(Constants.TARGET_REACHED_TOLERANCE, waypointTolerance))
+        if (_currentPath == null || _pathIndex >= _currentPath.Length)
         {
-            desiredVel = Steering.ArriveDirect(gameObject.transform.position, waypoint, _arriveRadius, MaxSpeed);
+            return Vector2.zero;
         }
-        else
+
+        Vector2 currentWaypoint = _currentPath[_pathIndex].worldPosition;
+        if (drawPathDebugLines)
+        {
+            Debug.DrawLine(transform.position, currentWaypoint, Color.yellow);
+        }
+
+        float distanceToWaypoint = ((Vector2)transform.position - currentWaypoint).magnitude;
+        if (distanceToWaypoint <= waypointTolerance)
         {
             _pathIndex++;
-            if (_pathIndex >= _currentPath.Count)
+            if (_pathIndex >= _currentPath.Length)
             {
-                // Reached final waypoint
                 _currentPath = null;
                 _pathIndex = 0;
+                _pathGoal = null;
+
                 if (HideFlagOnceReached)
                 {
                     _flagSr.enabled = false;
                 }
+
+                return Vector2.zero;
             }
+
+            currentWaypoint = _currentPath[_pathIndex].worldPosition;
         }
 
-        return desiredVel;
+        return Steering.ArriveDirect(gameObject.transform.position, currentWaypoint, _arriveRadius, MaxSpeed);
+    }
+
+    private void RequestPathTo(Vector2 destination)
+    {
+        Node[] path = Pathfinding.RequestPath(transform.position, destination);
+
+        // Retry once with a fresh grid in case scene objects moved since the last build.
+        if ((path == null || path.Length == 0) && Pathfinding.grid != null)
+        {
+            Pathfinding.grid.CreateGrid();
+            path = Pathfinding.RequestPath(transform.position, destination);
+        }
+
+        if (path != null && path.Length > 0)
+        {
+            _pathGoal = destination;
+            _currentPath = path;
+            _pathIndex = 0;
+            _lastClickPos = null;
+        }
+        else
+        {
+            // No path found: keep trying to move toward destination as fallback.
+            _pathGoal = null;
+            _currentPath = null;
+            _pathIndex = 0;
+            _lastClickPos = allowDirectFallbackWhenNoPath ? destination : null;
+            Debug.LogWarning("A* could not find a path to destination. Using direct fallback movement.");
+        }
+    }
+
+    private void TryRecalculatePathForDynamicObstacles()
+    {
+        if (_currentPath == null || _pathGoal == null || Time.time < _nextDynamicRepathTime)
+        {
+            return;
+        }
+
+        _nextDynamicRepathTime = Time.time + dynamicRepathInterval;
+
+        if (Pathfinding.grid == null)
+        {
+            return;
+        }
+
+        for (int i = _pathIndex; i < _currentPath.Length; i++)
+        {
+            if (Pathfinding.grid.IsPointBlockedByDynamicObstacle(_currentPath[i].worldPosition))
+            {
+                Pathfinding.grid.CreateGrid();
+                RequestPathTo((Vector2)_pathGoal);
+                break;
+            }
+        }
     }
 
     private void findClosestFly()

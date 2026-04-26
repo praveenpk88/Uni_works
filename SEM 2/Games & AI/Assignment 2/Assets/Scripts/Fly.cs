@@ -62,7 +62,7 @@ public class Fly : MonoBehaviour
 
     void Start()
     {
-        _settings = transform.parent.GetComponent<FlockSettings>();
+        _settings = GetComponentInParent<FlockSettings>();
         _rb = GetComponent<Rigidbody2D>();
         _sr = GetComponent<SpriteRenderer>();
 
@@ -77,12 +77,22 @@ public class Fly : MonoBehaviour
         // Initial FSM variables
         _timeDead = 0.0f;
         _neighbours = new List<Transform>();
+
+        if (_settings == null)
+        {
+            Debug.LogWarning("Fly could not find FlockSettings in parent hierarchy.");
+        }
     }
 
     void FixedUpdate()
     {
         // Update data needed in computing FSM transitions & states
         UpdateNeighbours();
+
+        if (_settings == null)
+        {
+            return;
+        }
 
         // Events triggered by each fixed update tick
         FixedUpdateEvents();
@@ -210,10 +220,25 @@ public class Fly : MonoBehaviour
         {
             Transform nearestFly = null;
 
-            foreach (Transform flockMember in transform.parent)
+            if (transform.parent == null)
             {
-                if (flockMember.GetComponent<Fly>().State != FlyState.Dead && flockMember != transform)
+                desiredVel = Vector2.zero;
+            }
+            else
+            {
+                foreach (Transform flockMember in transform.parent)
                 {
+                    if (flockMember == transform)
+                    {
+                        continue;
+                    }
+
+                    Fly otherFly = flockMember.GetComponent<Fly>();
+                    if (otherFly == null || otherFly.State == FlyState.Dead)
+                    {
+                        continue;
+                    }
+
                     if (nearestFly == null || (transform.position - flockMember.position).magnitude < (transform.position - nearestFly.position).magnitude)
                     {
                         nearestFly = flockMember;
@@ -260,10 +285,25 @@ public class Fly : MonoBehaviour
     {
         _neighbours.Clear();
 
+        if (transform.parent == null || _settings == null)
+        {
+            return;
+        }
+
         foreach (Transform flockMember in transform.parent)
         {
-            if (flockMember.GetComponent<Fly>().State != FlyState.Dead
-                && flockMember != transform && (transform.position - flockMember.position).magnitude < _settings.FlockRadius)
+            if (flockMember == transform)
+            {
+                continue;
+            }
+
+            Fly otherFly = flockMember.GetComponent<Fly>();
+            if (otherFly == null || otherFly.State == FlyState.Dead)
+            {
+                continue;
+            }
+
+            if ((transform.position - flockMember.position).magnitude < _settings.FlockRadius)
             {
                 _neighbours.Add(flockMember);
             }

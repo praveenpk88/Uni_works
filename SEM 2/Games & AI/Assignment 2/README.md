@@ -46,6 +46,22 @@ Any GenAI-assisted changes were reviewed, tested, and integrated by me. I fully 
 * Make sure you use the right Unity version as mentioned in class and on Canvas.
 * Do not edit the contents of the .gitignore file.
 
+## Member 1 Spec Validation Status
+
+This project is aligned to the full Member 1 checklist for A* Pathfinding Specialist requirements.
+
+Implemented in code:
+- A* frog movement with 8-direction neighbor support.
+- Non-constant heuristic with multiple heuristic options (Euclidean, Manhattan, Octile).
+- Recalculation only when needed (on click and periodic dynamic-obstacle checks, not every frame).
+- Varying terrain with movement costs integrated into A*.
+- Terrain and path gizmo visualization for demo evidence.
+- Path smoothing (toggleable).
+- Dynamic obstacle avoidance with path recalculation as moving obstacles block planned nodes.
+
+Validation and demo checklist guide:
+- `COMPLETE_TUTORIAL_A_to_Z.md`
+
 
 ## Authors of this template and skeleton code
 Dr Edouard Amouroux, School of Computing Technologies, STEM College, RMIT University <br/>

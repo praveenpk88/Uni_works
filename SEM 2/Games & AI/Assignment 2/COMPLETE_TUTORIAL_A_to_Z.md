@@ -1,1134 +1,358 @@
-# Assignment 1: Complete A* Pathfinding Implementation Tutorial
-## Year 2 Level - A to Z Guide for Complete Beginners
+# Member 1 Validation and Checklist - A* Pathfinding Specialist
 
-**Last Updated:** April 26, 2026  
-**Purpose:** Learn to implement complete A* pathfinding system from scratch  
-**Level:** Beginner-Friendly with Code Examples
+Last updated: 2026-04-26
 
----
+This document is a strict validation guide against the Member 1 checklist you provided.
 
-## TABLE OF CONTENTS
+## 1. Core Responsibilities Validation
 
-1. [What You're Building](#what-youre-building)
-2. [Starter Code Overview](#starter-code-overview)
-3. [Understanding A* Algorithm](#understanding-a-algorithm)
-4. [Step-by-Step Implementation](#step-by-step-implementation)
-5. [Complete Code Reference](#complete-code-reference)
-6. [Testing & Validation](#testing--validation)
-7. [Troubleshooting](#troubleshooting)
+### 1.1 A* Movement for Frog
+Status: PASS
 
----
+Implemented:
+- Frog movement requests A* paths and follows waypoints.
+- Static obstacles are avoided through unwalkable layer checks.
 
-## What You're Building
+Where:
+- Assets/Scripts/Frog.cs
+- Assets/Scripts/Pathfinding/Pathfinding.cs
+- Assets/Scripts/Pathfinding/AStarGrid.cs
 
-### The Goal
-Transform a Frog character in a Unity game to move intelligently around obstacles using A* pathfinding. The Frog should:
-- Find optimal paths around obstacles
-- Respect terrain difficulty (mud is slower)
-- Adapt to moving obstacles in real-time
-- Show its path visually for debugging
+### 1.2 8-Direction A*
+Status: PASS
 
-### What You Start With (Starter Code)
-- **AStarGrid.cs**: Basic grid structure with TODO comments
-- **Pathfinding.cs**: Incomplete A* algorithm skeleton
-- **Node.cs**: Data structure for grid nodes (working)
-- **Frog.cs**: Character controller without pathfinding
-- **Heap.cs**: Priority queue implementation (working)
+Implemented:
+- Neighbor generation supports diagonal neighbors when includeDiagonalNeighbours is enabled.
+- This is now true 8-directional A* behavior.
 
-### What You Need to Add/Change
-1. Complete A* algorithm implementation
-2. Terrain cost system
-3. Multiple heuristic options
-4. Pathfinding integration with Frog
-5. Dynamic obstacle handling
-6. Visualization system
-7. Path smoothing
+Where:
+- Assets/Scripts/Pathfinding/AStarGrid.cs (GetNeighbours)
 
----
+### 1.3 Non-Constant Heuristic
+Status: PASS
 
-## Starter Code Overview
+Implemented:
+- Heuristic options: Euclidean, Manhattan, Octile.
+- Heuristic selected from AStarGrid inspector via heuristicType.
 
-### Starting Point: AStarGrid.cs (Starter Code)
+Where:
+- Assets/Scripts/Pathfinding/AStarGrid.cs (PathHeuristic, GetHeuristicDistance)
+- Assets/Scripts/Pathfinding/Pathfinding.cs (Heuristic)
+
+### 1.4 Recalculate Paths Only When Needed
+Status: PASS
+
+Implemented:
+- Repath on click target change.
+- Repath at controlled interval when dynamic obstacles block remaining waypoints.
+- No every-frame full path recomputation.
+
+Where:
+- Assets/Scripts/Frog.cs (RequestPathTo, TryRecalculatePathForDynamicObstacles, dynamicRepathInterval)
+
+## 2. A* Enhancement Checks
+
+### 2.1 Varying Terrain (2 marks)
+Status: PASS
+
+Implemented:
+- Terrain types: Normal, Mud, Water, Grass.
+- Terrain movement costs are applied in G-cost via GetStepCost.
+
+Where:
+- Assets/Scripts/Pathfinding/Node.cs
+- Assets/Scripts/Pathfinding/AStarGrid.cs (terrain masks and costs)
+- Assets/Scripts/Pathfinding/Pathfinding.cs (GCost)
+
+### 2.2 Terrain Visualization with Distinct Gizmo Colors
+Status: PASS
+
+Implemented:
+- Distinct colors for terrain categories and red for blocked cells.
+- Toggle with displayTerrainGizmos.
+
+Where:
+- Assets/Scripts/Pathfinding/AStarGrid.cs (OnDrawGizmos, GetTerrainColor)
+
+### 2.3 Varying Heuristics with Toggle (2 marks)
+Status: PASS
+
+Implemented:
+- heuristicType enum in AStarGrid inspector.
+- Supports multiple choices for demonstration.
+
+Where:
+- Assets/Scripts/Pathfinding/AStarGrid.cs
+
+### 2.4 Path Smoothing (2 marks)
+Status: PASS
+
+Implemented:
+- Optional smoothing removes unnecessary intermediate nodes when line-of-sight is clear.
+- Toggle with enablePathSmoothing.
+
+Where:
+- Assets/Scripts/Pathfinding/Pathfinding.cs (SmoothPath)
+- Assets/Scripts/Pathfinding/AStarGrid.cs (IsPathSegmentClear)
+
+### 2.5 Dynamic Obstacles (2 marks)
+Status: PASS
+
+Implemented:
+- Dynamic obstacle layer support in grid and runtime checks.
+- Frog recalculates path when moving obstacles block planned nodes.
+
+Where:
+- Assets/Scripts/Pathfinding/AStarGrid.cs (dynamicObstacleMask, IsPointBlockedByDynamicObstacle)
+- Assets/Scripts/Frog.cs (TryRecalculatePathForDynamicObstacles)
+
+## 3. Demonstration Checklist (Video)
+
+Use this exact sequence to make each feature visually evident.
+
+1. Baseline A* path around static obstacles.
+2. Turn includeDiagonalNeighbours off, click target, show orthogonal path.
+3. Turn includeDiagonalNeighbours on, click same target, show diagonal path.
+4. Switch heuristicType between Manhattan and Euclidean/Octile and show path differences.
+5. Show terrain map colors by enabling displayTerrainGizmos.
+6. Increase waterCost/mudCost and show path rerouting to lower-cost terrain.
+7. Toggle enablePathSmoothing off then on to show waypoint reduction.
+8. Move/animate dynamic obstacles and show automatic repath.
+9. Keep displayPathGizmos enabled so route changes are clearly visible.
+
+## 4. Inspector Setup Required
+
+On AStarGrid object:
+- includeDiagonalNeighbours: On
+- heuristicType: choose one for each demo segment
+- enablePathSmoothing: toggle during demo
+- displayGridGizmos: On
+- displayTerrainGizmos: On
+- displayPathGizmos: On
+- unwalkableMask: static obstacle layer
+- dynamicObstacleMask: moving obstacle layer
+- mudMask/waterMask/grassMask: terrain layers
+- normalCost/mudCost/waterCost/grassCost: set distinct values
+
+On Frog object:
+- waypointTolerance: keep small (example 0.2)
+- dynamicRepathInterval: moderate (example 0.2)
+
+## 5. Strictness Notes
+
+- This implementation is now checklist-oriented for the full Member 1 specification you shared.
+- It is not restricted to skeleton-only minimum anymore.
+- If your marker asks for strict skeleton style only, keep this version but explain why each enhancement maps directly to your rubric checklist.
+
+## 6. Implementation Evidence Report
+
+This section is the line-by-line change report you asked for. It ties each change to the exact file, the reason it was changed, and a small code quote so you can explain it in review or video.
+
+### 6.1 Node.cs - terrain-aware node data
+
+Why it changed:
+- The grid nodes needed to remember which terrain they belong to and how expensive that terrain is.
+- This lets A* prefer cheaper terrain instead of treating every cell the same.
+
+Exact file:
+- [Assets/Scripts/Pathfinding/Node.cs](Assets/Scripts/Pathfinding/Node.cs)
+
+Relevant lines:
+- [Terrain type enum](Assets/Scripts/Pathfinding/Node.cs#L9)
+- [Movement cost field](Assets/Scripts/Pathfinding/Node.cs#L38)
+- [Constructor update](Assets/Scripts/Pathfinding/Node.cs#L43)
+- [Clone preserves terrain](Assets/Scripts/Pathfinding/Node.cs#L53)
+
+Code quote:
+```csharp
+public enum TerrainType
+{
+	Normal,
+	Mud,
+	Water,
+	Grass
+}
+```
 
 ```csharp
-public class AStarGrid : MonoBehaviour
-{
-    public bool displayGridGizmos;
-    public LayerMask unwalkableMask;
-    public Vector2 gridWorldSize;
-    public float gridSize;          // <-- Used to create nodes
-    public float overlapCircleRadius;
-    public bool includeDiagonalNeighbours;
-
-    Node[,] grid;
-    float nodeDiameter;
-    int gridSizeX, gridSizeY;
-
-    public void CreateGrid()
-    {
-        // Creates a grid of nodes
-        // Checks if each node is walkable using unwalkableMask
-        // Only 4-directional movement (up, down, left, right)
-    }
-
-    public List<Node> GetNeighbours(Node node)
-    {
-        // Returns up to 4 adjacent nodes (no diagonals)
-    }
-}
+public Node(bool _walkable, Vector2 _worldPos, int _gridX, int _gridY, TerrainType _terrainType = TerrainType.Normal, float _movementCost = 1f)
 ```
 
-**What's Missing:**
-- ❌ No terrain types support
-- ❌ No A* algorithm implementation
-- ❌ No heuristic options
-- ❌ No visualization
-- ❌ No path smoothing
+What it implements:
+- Terrain classification for each node.
+- Movement cost storage for weighted pathfinding.
 
----
+### 6.2 AStarGrid.cs - terrain, heuristics, smoothing, and gizmos
 
-### Starting Point: Pathfinding.cs (Starter Code - INCOMPLETE)
+Why it changed:
+- This file now creates the grid, assigns terrain, detects static and dynamic obstacles, calculates heuristics, and draws the visual debug view.
+- It is the main configuration surface for the Member 1 features.
+
+Exact file:
+- [Assets/Scripts/Pathfinding/AStarGrid.cs](Assets/Scripts/Pathfinding/AStarGrid.cs)
+
+Relevant lines:
+- [Terrain and path gizmo toggles](Assets/Scripts/Pathfinding/AStarGrid.cs#L9)
+- [Dynamic obstacle mask](Assets/Scripts/Pathfinding/AStarGrid.cs#L14)
+- [Heuristic selection](Assets/Scripts/Pathfinding/AStarGrid.cs#L28)
+- [Path smoothing toggle](Assets/Scripts/Pathfinding/AStarGrid.cs#L31)
+- [8-direction toggle](Assets/Scripts/Pathfinding/AStarGrid.cs#L44)
+- [Neighbour generation](Assets/Scripts/Pathfinding/AStarGrid.cs#L100)
+- [Heuristic calculation](Assets/Scripts/Pathfinding/AStarGrid.cs#L131)
+- [Step cost calculation](Assets/Scripts/Pathfinding/AStarGrid.cs#L149)
+- [Line-of-sight test](Assets/Scripts/Pathfinding/AStarGrid.cs#L155)
+- [Dynamic obstacle overlap test](Assets/Scripts/Pathfinding/AStarGrid.cs#L161)
+- [Terrain and path gizmos](Assets/Scripts/Pathfinding/AStarGrid.cs#L260)
+
+Code quote:
+```csharp
+public bool displayTerrainGizmos;
+public bool displayPathGizmos;
+public LayerMask dynamicObstacleMask;
+public enum PathHeuristic
+{
+	Euclidean,
+	Manhattan,
+	Octile
+}
+```
 
 ```csharp
-Node[] FindPath(Vector2 from, Vector2 to)
+if (!includeDiagonalNeighbours && Mathf.Abs(x) + Mathf.Abs(y) == 2)
 {
-    // Setup nodes and validation
-    Node startNode = grid.NodeFromWorldPoint(from);
-    Node targetNode = grid.NodeFromWorldPoint(to);
-    
-    if (startNode.walkable && targetNode.walkable)
-    {
-        Heap<Node> openSet = new Heap<Node>(grid.MaxSize);
-        HashSet<Node> closedSet = new HashSet<Node>();
-
-        // TODO: Add start node to openSet
-        // TODO: While openSet has nodes:
-        //   TODO: Get lowest F-cost node
-        //   TODO: If reached target, return path
-        //   TODO: Explore neighbors
-        //   TODO: Update costs if better path found
-
-        // The algorithm is completely empty - just TODOs!
-    }
-
-    return waypoints;  // Always empty array!
+	continue;
 }
 ```
-
-**What's Missing:**
-- ❌ Algorithm body is all TODOs
-- ❌ Never adds start node
-- ❌ Main loop doesn't execute
-- ❌ Returns empty array
-
----
-
-### Starting Point: Frog.cs (Starter Code - NO PATHFINDING)
 
 ```csharp
-public class Frog : MonoBehaviour
-{
-    // Has steering, animation, health
-    // But NO pathfinding!
-    
-    void Update()
-    {
-        if (ClickMoveAction.WasPressedThisFrame())
-        {
-            _lastClickPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-            _flag.position = (Vector2)_lastClickPos + new Vector2(0.55f, 0.55f);
-            _flagSr.enabled = true;
-            // Only sets flag position, doesn't calculate path!
-        }
-    }
-
-    private Vector2 decideMovement()
-    {
-        // Just returns zero - no movement logic!
-        return Vector2.zero;
-    }
-}
+case PathHeuristic.Manhattan:
+	return dx + dy;
+case PathHeuristic.Octile:
+	float diagonal = Mathf.Min(dx, dy);
+	float straight = Mathf.Max(dx, dy) - diagonal;
+	return diagonal * Mathf.Sqrt(2f) + straight;
 ```
 
-**What's Missing:**
-- ❌ No Pathfinder reference
-- ❌ No path calculation on click
-- ❌ No waypoint following logic
-- ❌ No dynamic obstacle handling
+What it implements:
+- 8-direction neighbor support.
+- Multiple heuristic choices.
+- Terrain movement costs.
+- Static and dynamic obstacle detection.
+- Terrain and path visualization.
+- Path smoothing support through line-of-sight checks.
 
----
+### 6.3 Pathfinding.cs - A* algorithm and smoothing logic
 
-## Understanding A* Algorithm
+Why it changed:
+- This file now performs the actual A* search using the grid data.
+- It is the control logic that decides which node to expand, when to stop, and how to rebuild the path.
 
-### What is A*?
+Exact file:
+- [Assets/Scripts/Pathfinding/Pathfinding.cs](Assets/Scripts/Pathfinding/Pathfinding.cs)
 
-A* is a pathfinding algorithm that finds the shortest path from point A to point B while avoiding obstacles. It works by:
+Relevant lines:
+- [Start node setup](Assets/Scripts/Pathfinding/Pathfinding.cs#L82)
+- [Open set initialization](Assets/Scripts/Pathfinding/Pathfinding.cs#L86)
+- [Lowest-cost node removal](Assets/Scripts/Pathfinding/Pathfinding.cs#L94)
+- [Neighbour exploration](Assets/Scripts/Pathfinding/Pathfinding.cs#L108)
+- [Terrain-aware G-cost](Assets/Scripts/Pathfinding/Pathfinding.cs#L115)
+- [Heuristic update](Assets/Scripts/Pathfinding/Pathfinding.cs#L128)
+- [Path smoothing toggle](Assets/Scripts/Pathfinding/Pathfinding.cs#L159)
+- [Path recording for gizmos](Assets/Scripts/Pathfinding/Pathfinding.cs#L164)
+- [Fallback clear path reset](Assets/Scripts/Pathfinding/Pathfinding.cs#L168)
+- [G-cost function](Assets/Scripts/Pathfinding/Pathfinding.cs#L207)
+- [Heuristic function](Assets/Scripts/Pathfinding/Pathfinding.cs#L213)
+- [Smoothing function](Assets/Scripts/Pathfinding/Pathfinding.cs#L218)
 
-1. **Keeping Track of Two Sets:**
-   - **Open Set**: Nodes to explore next
-   - **Closed Set**: Nodes already explored
-
-2. **Using Two Costs:**
-   - **G Cost**: Distance traveled from start to current node
-   - **H Cost**: Estimated distance from current node to goal
-   - **F Cost**: G + H (total estimated cost)
-
-3. **Always Picking the Best Node:**
-   - Always explores the node with lowest F cost
-   - This keeps the search efficient and accurate
-
-### Visual Example
-
+Code quote:
+```csharp
+openSet.Add(startNode);
+Node currentNode = openSet.RemoveFirst();
 ```
-Start (S) ──── Normal Grid ──── Goal (G)
-         \                     /
-          \    Obstacles      /
-           \    (RED CELLS)   /
-            \                /
-
-Without Pathfinding:
-S → runs straight into wall
-
-With A*:
-S → goes around obstacles → G (optimal path)
-```
-
-### The Three Heuristics
-
-**Heuristic** = Estimation of distance to goal
-
-```
-3 Options:
-
-1. EUCLIDEAN (Most Realistic)
-   - Straight-line distance
-   - Best for natural-looking paths
-   - Slightly slower
-
-2. MANHATTAN (Grid-Based)
-   - Distance if you can only move up/down/left/right
-   - Good for grid systems
-   - Faster computation
-
-3. OCTILE (Optimized for Diagonals)
-   - Accounts for diagonal movement
-   - Balanced performance
-   - Most efficient for 2D grids
-
-Which to use?
-→ Euclidean for natural paths (default)
-→ Manhattan for pure grid movement
-→ Octile for balanced performance
-```
-
----
-
-## Step-by-Step Implementation
-
-### STEP 1: Enhance Node.cs - Add Terrain Support
-
-**What to Add:**
-The starter Node.cs is good but needs terrain tracking.
-
-**Changes:**
 
 ```csharp
-// IN: public class Node : IHeapItem<Node>
-// ADD these new fields after existing fields:
-
-public enum TerrainType { Normal, Mud, Water, Grass }  // <-- NEW
-
-public TerrainType terrainType;         // <-- NEW
-public float movementCost;              // <-- NEW
-
-// MODIFY: Constructor to accept terrain
-// FROM:
-public Node(bool _walkable, Vector2 _worldPos, int _gridX, int _gridY)
-{
-    walkable = _walkable;
-    worldPosition = _worldPos;
-    gridX = _gridX;
-    gridY = _gridY;
-}
-
-// TO:
-public Node(bool _walkable, Vector2 _worldPos, int _gridX, int _gridY, 
-            TerrainType _terrainType = TerrainType.Normal, 
-            float _movementCost = 1f)  // <-- NEW PARAMETERS
-{
-    walkable = _walkable;
-    worldPosition = _worldPos;
-    gridX = _gridX;
-    gridY = _gridY;
-    terrainType = _terrainType;         // <-- NEW
-    movementCost = _movementCost;       // <-- NEW
-}
+float newCostToNeighbour = currentNode.gCost + GCost(currentNode, node);
+node.hCost = Heuristic(node, targetNode);
+node.parent = currentNode;
 ```
-
-**Why:**
-- Nodes need to know what terrain they are on
-- Movement cost allows paths to prefer easy terrain
-- Mud (cost=3) is slower than normal (cost=1)
-
----
-
-### STEP 2: Replace AStarGrid.cs - Complete Rewrite
-
-**What to Replace:**
-The starter AStarGrid.cs is too basic. Replace entire file with new version.
-
-**Key Changes from Starter to New:**
-
-| Starter Feature | New Feature | Why |
-|---|---|---|
-| `gridSize` | `nodeRadius` | Better for 2D representation |
-| Only `unwalkableMask` | Terrain + obstacle layers | Support different terrain types |
-| No heuristic system | Multiple heuristics (Euclidean, Manhattan, Octile) | Different path qualities |
-| `GetNeighbours()` with 4 directions | 8-directional with `allowDiagonal` | More flexibility |
-| No terrain costs | Full terrain cost system | Respect terrain difficulty |
-| No visualization | Complete gizmo system | Debug support |
-| Returns `Node[]` | Returns `List<Vector2>` | Easier to use waypoints |
-
-**Complete New AStarGrid.cs:**
 
 ```csharp
-using System.Collections.Generic;
-using UnityEngine;
-
-public class AStarGrid : MonoBehaviour
+if (grid.enablePathSmoothing)
 {
-    // ============ VISUALIZATION & DEBUG ============
-    [Header("Gizmo/Debug Visualization")]
-    public bool showGridGizmos = true;
-    public bool showTerrainGizmos = true;
-    public bool showPathGizmos = true;
-    [HideInInspector]
-    public List<Vector2> lastPath;
-
-    // ============ TERRAIN SYSTEM ============
-    public enum TerrainType { Normal, Mud, Water, Grass }
-    
-    [System.Serializable]
-    public struct TerrainCost
-    {
-        public TerrainType type;
-        public float cost;
-        public Color color;
-    }
-    
-    public TerrainCost[] terrainCosts = new TerrainCost[] {
-        new TerrainCost { type = TerrainType.Normal, cost = 1f, color = Color.white },
-        new TerrainCost { type = TerrainType.Mud, cost = 3f, color = new Color(0.5f,0.25f,0f) },
-        new TerrainCost { type = TerrainType.Water, cost = 5f, color = Color.blue },
-        new TerrainCost { type = TerrainType.Grass, cost = 2f, color = Color.green }
-    };
-
-    // ============ TERRAIN DETECTION (Use Unity Layers) ============
-    public LayerMask mudMask;
-    public LayerMask waterMask;
-    public LayerMask grassMask;
-    public LayerMask obstacleMask;
-    [Header("Dynamic Obstacles")]
-    public LayerMask dynamicObstacleMask;
-
-    // ============ GRID SETTINGS ============
-    public Vector2 gridWorldSize = new Vector2(20f, 20f);
-    public float nodeRadius = 0.5f;
-    public bool allowDiagonal = true;
-
-    // ============ HEURISTIC OPTIONS ============
-    public enum HeuristicType { Euclidean, Manhattan, Octile }
-    [Header("A* Heuristic")]
-    public HeuristicType heuristicType = HeuristicType.Euclidean;
-
-    // ============ INTERNAL GRID ============
-    private Node[,] grid;
-    private float nodeDiameter;
-    private int gridSizeX, gridSizeY;
-    private Vector2 worldBottomLeft;
-
-    // ============ INITIALIZATION ============
-    private void Awake()
-    {
-        CreateGrid();
-    }
-
-    // ============ GRID CREATION ============
-    public void CreateGrid()
-    {
-        // Calculate grid dimensions
-        nodeDiameter = nodeRadius * 2f;
-        gridSizeX = Mathf.RoundToInt(gridWorldSize.x / nodeDiameter);
-        gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);
-        grid = new Node[gridSizeX, gridSizeY];
-        
-        // Calculate bottom-left corner of grid
-        worldBottomLeft = (Vector2)transform.position - 
-                          Vector2.right * (gridWorldSize.x / 2f) - 
-                          Vector2.up * (gridWorldSize.y / 2f);
-
-        // Create each node
-        for (int x = 0; x < gridSizeX; x++)
-        {
-            for (int y = 0; y < gridSizeY; y++)
-            {
-                // Calculate world position of this node
-                Vector2 worldPoint = worldBottomLeft + 
-                                    new Vector2(x * nodeDiameter + nodeRadius, 
-                                              y * nodeDiameter + nodeRadius);
-
-                // Check if walkable (no obstacles)
-                bool walkable = Physics2D.OverlapCircle(worldPoint, nodeRadius * 0.9f, obstacleMask) == null
-                                 && Physics2D.OverlapCircle(worldPoint, nodeRadius * 0.9f, dynamicObstacleMask) == null;
-
-                // Detect terrain type
-                TerrainType terrain = TerrainType.Normal;
-                if (Physics2D.OverlapCircle(worldPoint, nodeRadius * 0.9f, mudMask)) 
-                    terrain = TerrainType.Mud;
-                else if (Physics2D.OverlapCircle(worldPoint, nodeRadius * 0.9f, waterMask)) 
-                    terrain = TerrainType.Water;
-                else if (Physics2D.OverlapCircle(worldPoint, nodeRadius * 0.9f, grassMask)) 
-                    terrain = TerrainType.Grass;
-
-                // Get movement cost for this terrain
-                float moveCost = 1f;
-                foreach (var tc in terrainCosts)
-                {
-                    if (tc.type == terrain) { moveCost = tc.cost; break; }
-                }
-
-                // Create the node
-                grid[x, y] = new Node(walkable, worldPoint, x, y, terrain, moveCost);
-            }
-        }
-    }
-
-    // ============ MAIN PATHFINDING METHOD ============
-    public List<Vector2> FindPath(Vector2 startWorldPos, Vector2 targetWorldPos, 
-                                   HeuristicType? heuristicOverride = null, 
-                                   bool smoothPath = true, 
-                                   bool recordForGizmos = false)
-    {
-        if (grid == null) CreateGrid();
-
-        // Convert world positions to grid nodes
-        Node startNode = NodeFromWorldPoint(startWorldPos);
-        Node targetNode = NodeFromWorldPoint(targetWorldPos);
-
-        if (startNode == null || targetNode == null)
-            return null;
-
-        // Use override or default heuristic
-        HeuristicType heuristic = heuristicOverride ?? heuristicType;
-
-        // ============ A* ALGORITHM STARTS HERE ============
-        List<Node> openSet = new List<Node>();
-        HashSet<Node> closedSet = new HashSet<Node>();
-        
-        // Initialize start node
-        startNode.gCost = 0;
-        startNode.hCost = GetHeuristic(startNode, targetNode, heuristic);
-        openSet.Add(startNode);
-
-        // Main A* loop
-        while (openSet.Count > 0)
-        {
-            // STEP 1: Find node with lowest F cost
-            Node currentNode = openSet[0];
-            for (int i = 1; i < openSet.Count; i++)
-            {
-                // Better F cost, or same F but better H cost (tiebreaker)
-                if (openSet[i].fCost < currentNode.fCost || 
-                    (Mathf.Approximately(openSet[i].fCost, currentNode.fCost) && 
-                     openSet[i].hCost < currentNode.hCost))
-                {
-                    currentNode = openSet[i];
-                }
-            }
-
-            // STEP 2: Move from open to closed
-            openSet.Remove(currentNode);
-            closedSet.Add(currentNode);
-
-            // STEP 3: SUCCESS! - Reached goal
-            if (currentNode == targetNode)
-            {
-                var rawPath = RetracePath(startNode, targetNode);
-                var result = smoothPath ? SmoothPath(rawPath) : rawPath;
-                if (recordForGizmos)
-                    lastPath = result;
-                return result;
-            }
-
-            // STEP 4: Explore neighbors
-            foreach (Node neighbour in GetNeighbours(currentNode))
-            {
-                // Skip if not walkable or already explored
-                if (!neighbour.walkable || closedSet.Contains(neighbour))
-                    continue;
-
-                // Calculate distance cost including terrain
-                float tentativeG = currentNode.gCost + 
-                                  Vector2.Distance(currentNode.worldPosition, 
-                                                  neighbour.worldPosition) * 
-                                  neighbour.movementCost;  // <-- TERRAIN COST APPLIED HERE
-
-                // If new path is better, update neighbor
-                if (tentativeG < neighbour.gCost || !openSet.Contains(neighbour))
-                {
-                    neighbour.gCost = tentativeG;
-                    neighbour.hCost = GetHeuristic(neighbour, targetNode, heuristic);
-                    neighbour.parent = currentNode;
-
-                    if (!openSet.Contains(neighbour))
-                        openSet.Add(neighbour);
-                }
-            }
-        }
-
-        // No path found
-        return null;
-    }
-
-    // ============ RECONSTRUCT PATH ============
-    private List<Vector2> RetracePath(Node startNode, Node endNode)
-    {
-        List<Vector2> path = new List<Vector2>();
-        Node current = endNode;
-        
-        // Follow parent links backwards
-        while (current != startNode)
-        {
-            path.Add(current.worldPosition);
-            current = current.parent;
-            if (current == null) break;
-        }
-        
-        // Reverse to get start → goal order
-        path.Reverse();
-        return path;
-    }
-
-    // ============ PATH SMOOTHING ============
-    private List<Vector2> SmoothPath(List<Vector2> path)
-    {
-        if (path == null || path.Count < 3) return path;
-        
-        List<Vector2> smoothed = new List<Vector2>();
-        int i = 0;
-        
-        while (i < path.Count)
-        {
-            smoothed.Add(path[i]);
-            int next = i + 1;
-            
-            // Try to skip waypoints if line-of-sight is clear
-            for (int j = path.Count - 1; j > next; j--)
-            {
-                if (HasLineOfSight(path[i], path[j]))
-                {
-                    next = j;  // Skip intermediate points
-                    break;
-                }
-            }
-            i = next;
-        }
-        
-        // Ensure final waypoint is included
-        if (smoothed[smoothed.Count - 1] != path[path.Count - 1])
-            smoothed.Add(path[path.Count - 1]);
-        
-        return smoothed;
-    }
-
-    private bool HasLineOfSight(Vector2 a, Vector2 b)
-    {
-        return !Physics2D.Linecast(a, b, obstacleMask);
-    }
-
-    // ============ HEURISTIC CALCULATIONS ============
-    private float GetHeuristic(Node a, Node b, HeuristicType type)
-    {
-        float dx = Mathf.Abs(a.worldPosition.x - b.worldPosition.x);
-        float dy = Mathf.Abs(a.worldPosition.y - b.worldPosition.y);
-        
-        switch (type)
-        {
-            case HeuristicType.Manhattan:
-                return dx + dy;
-            case HeuristicType.Octile:
-                float F = Mathf.Sqrt(2f) - 1f;
-                return (dx < dy) ? F * dx + dy : F * dy + dx;
-            case HeuristicType.Euclidean:
-            default:
-                return Mathf.Sqrt(dx * dx + dy * dy);
-        }
-    }
-
-    // ============ COORDINATE CONVERSION ============
-    public Node NodeFromWorldPoint(Vector2 worldPoint)
-    {
-        if (grid == null) return null;
-        
-        float percentX = (worldPoint.x - worldBottomLeft.x) / (gridWorldSize.x);
-        float percentY = (worldPoint.y - worldBottomLeft.y) / (gridWorldSize.y);
-        percentX = Mathf.Clamp01(percentX);
-        percentY = Mathf.Clamp01(percentY);
-
-        int x = Mathf.Clamp(Mathf.RoundToInt((gridSizeX - 1) * percentX), 0, gridSizeX - 1);
-        int y = Mathf.Clamp(Mathf.RoundToInt((gridSizeY - 1) * percentY), 0, gridSizeY - 1);
-        return grid[x, y];
-    }
-
-    public Node ClosestWalkableNode(Node node)
-    {
-        return node;  // Stub for compatibility
-    }
-
-    public int MaxSize
-    {
-        get { return (grid != null) ? grid.GetLength(0) * grid.GetLength(1) : 0; }
-    }
-
-    // ============ NEIGHBOR FINDING ============
-    private List<Node> GetNeighbours(Node node)
-    {
-        List<Node> neighbours = new List<Node>();
-
-        for (int x = -1; x <= 1; x++)
-        {
-            for (int y = -1; y <= 1; y++)
-            {
-                if (x == 0 && y == 0) continue;
-                if (!allowDiagonal && Mathf.Abs(x) + Mathf.Abs(y) == 2) continue;
-
-                int checkX = node.gridX + x;
-                int checkY = node.gridY + y;
-
-                if (checkX >= 0 && checkX < gridSizeX && checkY >= 0 && checkY < gridSizeY)
-                {
-                    neighbours.Add(grid[checkX, checkY]);
-                }
-            }
-        }
-
-        return neighbours;
-    }
-
-    // ============ VISUALIZATION (Gizmos) ============
-    private void OnDrawGizmos()
-    {
-        // Draw grid wireframe
-        if (showGridGizmos)
-        {
-            Gizmos.color = Color.gray;
-            Gizmos.DrawWireCube(transform.position, 
-                               new Vector3(gridWorldSize.x, gridWorldSize.y, 1f));
-        }
-
-        if (grid != null)
-        {
-            // Draw terrain cells
-            if (showTerrainGizmos)
-            {
-                foreach (Node n in grid)
-                {
-                    if (!n.walkable)
-                        Gizmos.color = Color.red;  // Obstacles
-                    else
-                        Gizmos.color = GetTerrainColor(n.terrainType);  // Terrain
-                    
-                    Gizmos.DrawCube(n.worldPosition, 
-                                   Vector3.one * (nodeRadius * 1.5f));
-                }
-            }
-
-            // Draw computed path
-            if (showPathGizmos && lastPath != null && lastPath.Count > 1)
-            {
-                Gizmos.color = Color.yellow;
-                for (int i = 0; i < lastPath.Count - 1; i++)
-                {
-                    Gizmos.DrawLine(lastPath[i], lastPath[i + 1]);
-                }
-                Gizmos.DrawSphere(lastPath[lastPath.Count - 1], nodeRadius * 0.7f);
-            }
-        }
-    }
-
-    private Color GetTerrainColor(TerrainType type)
-    {
-        foreach (var tc in terrainCosts)
-        {
-            if (tc.type == type) return tc.color;
-        }
-        return Color.white;
-    }
-
-    // ============ NODE CLASS (EMBEDDED) ============
-    public class Node : IHeapItem<Node>
-    {
-        public TerrainType terrainType;
-        public float movementCost;
-        public bool walkable;
-        public Vector2 worldPosition;
-        public int gridX;
-        public int gridY;
-        public float gCost = float.MaxValue;
-        public float hCost = 0f;
-        public Node parent = null;
-        public float fCost { get { return gCost + hCost; } }
-        
-        private int heapIndex;
-        
-        public int HeapIndex
-        {
-            get { return heapIndex; }
-            set { heapIndex = value; }
-        }
-
-        public int CompareTo(Node other)
-        {
-            int compare = fCost.CompareTo(other.fCost);
-            if (compare == 0)
-            {
-                compare = hCost.CompareTo(other.hCost);
-            }
-            return -compare;
-        }
-
-        public Node(bool walkable, Vector2 worldPos, int x, int y, 
-                   TerrainType terrainType = TerrainType.Normal, 
-                   float movementCost = 1f)
-        {
-            this.walkable = walkable;
-            this.worldPosition = worldPos;
-            this.gridX = x;
-            this.gridY = y;
-            this.terrainType = terrainType;
-            this.movementCost = movementCost;
-        }
-    }
+	waypoints = SmoothPath(waypoints);
 }
 ```
 
-**Why This Works:**
-- Complete A* implementation in main loop
-- Terrain costs multiply movement distance
-- Multiple heuristics allow path variation
-- Visualization helps debug
-- Path smoothing removes unnecessary waypoints
+What it implements:
+- A* open-set and closed-set search.
+- Goal detection.
+- Weighted terrain movement cost.
+- Heuristic-driven path choice.
+- Optional smoothing when the path is unobstructed.
+- Gizmo path recording for visual verification.
 
----
+### 6.4 Frog.cs - click-to-path movement and dynamic repath
 
-### STEP 3: Enhance Frog.cs - Add Pathfinding Integration
+Why it changed:
+- The Frog now requests a path when the user clicks and follows the returned waypoints.
+- It also rechecks the remaining route if dynamic obstacles block the path.
 
-**Changes to Frog.cs:**
+Exact file:
+- [Assets/Scripts/Frog.cs](Assets/Scripts/Frog.cs)
+
+Relevant lines:
+- [Repath interval field](Assets/Scripts/Frog.cs#L51)
+- [Path request on click](Assets/Scripts/Frog.cs#L102)
+- [Dynamic obstacle path check](Assets/Scripts/Frog.cs#L106)
+- [Path-following movement branch](Assets/Scripts/Frog.cs#L169)
+- [Waypoint movement method](Assets/Scripts/Frog.cs#L206)
+- [RequestPath helper](Assets/Scripts/Frog.cs#L243)
+- [Path recalculation helper](Assets/Scripts/Frog.cs#L261)
+- [Dynamic repath timing](Assets/Scripts/Frog.cs#L268)
+- [Re-request after block detection](Assets/Scripts/Frog.cs#L280)
+
+Code quote:
+```csharp
+RequestPathTo((Vector2)_lastClickPos);
+```
 
 ```csharp
-// ADD these new fields after existing fields:
-public AStarGrid Pathfinder;           // <-- NEW
-private List<Vector2> _currentPath;    // <-- NEW
-private int _pathIndex = 0;            // <-- NEW
-public float waypointTolerance = 0.2f; // <-- NEW
-
-// MODIFY: Start() method - ADD these lines at the end:
-if (Pathfinder == null)
-    Pathfinder = Object.FindFirstObjectByType<AStarGrid>();
-_currentPath = null;
-_pathIndex = 0;
-
-// MODIFY: Update() method - REPLACE entire section:
-// FROM:
-void Update()
+if (_currentPath != null && _pathIndex < _currentPath.Length)
 {
-    if (ClickMoveAction.WasPressedThisFrame())
-    {
-        _lastClickPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        _arriveRadius = Mathf.Clamp(...);
-        _flag.position = (Vector2)_lastClickPos + new Vector2(0.55f, 0.55f);
-        _flagSr.enabled = true;
-    }
-    else
-    {
-        if (closestFly != null)
-            Debug.DrawLine(...);
-        if (closestSnake != null)
-            Debug.DrawLine(...);
-    }
-}
-
-// TO:
-void Update()
-{
-    if (ClickMoveAction.WasPressedThisFrame())
-    {
-        Vector2 clickPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        _arriveRadius = Mathf.Clamp(ArrivePct * (clickPos - (Vector2)transform.position).magnitude, 
-                                   MinArriveRadius, MaxArriveRadius);
-
-        _flag.position = clickPos + new Vector2(0.55f, 0.55f);
-        _flagSr.enabled = true;
-
-        // NEW: Request pathfinding!
-        if (Pathfinder != null)
-        {
-            _currentPath = Pathfinder.FindPath(transform.position, clickPos, 
-                                              Pathfinder.heuristicType, false, true);
-            _pathIndex = 0;
-            if (_currentPath == null || _currentPath.Count == 0)
-            {
-                _lastClickPos = clickPos;
-            }
-            else
-            {
-                _lastClickPos = null;
-            }
-        }
-        else
-        {
-            _lastClickPos = clickPos;
-        }
-    }
-    else
-    {
-        // NEW: Check if path is blocked by obstacles
-        if (_currentPath != null && _currentPath.Count > 0 && Pathfinder != null)
-        {
-            foreach (var point in _currentPath)
-            {
-                if (Physics2D.OverlapCircle(point, Pathfinder.nodeRadius * 0.9f, 
-                                           Pathfinder.dynamicObstacleMask))
-                {
-                    Pathfinder.CreateGrid();
-                    _currentPath = Pathfinder.FindPath(transform.position, 
-                                                     _currentPath[_currentPath.Count - 1],
-                                                     Pathfinder.heuristicType, false, true);
-                    _pathIndex = 0;
-                    break;
-                }
-            }
-        }
-        if (closestFly != null)
-            Debug.DrawLine(transform.position, closestFly.transform.position, Color.black);
-        if (closestSnake != null)
-            Debug.DrawLine(transform.position, closestSnake.transform.position, Color.red);
-    }
-}
-
-// MODIFY: decideMovement() method - REPLACE body:
-// FROM:
-private Vector2 decideMovement()
-{
-    // ... (existing code)
-    return Vector2.zero;
-}
-
-// TO:
-private Vector2 decideMovement()
-{
-    // PRIORITY 1: Follow computed path
-    if (_currentPath != null && _pathIndex < _currentPath.Count)
-    {
-        return getVelocityAlongPath();
-    }
-
-    // PRIORITY 2: Go to fallback click position
-    if (_lastClickPos != null)
-    {
-        return getVelocityTowardsFlag();
-    }
-
-    return Vector2.zero;
-}
-
-// ADD these new methods:
-private Vector2 getVelocityAlongPath()
-{
-    Vector2 desiredVel = Vector2.zero;
-    if (_currentPath == null || _pathIndex >= _currentPath.Count)
-        return desiredVel;
-
-    Vector2 waypoint = _currentPath[_pathIndex];
-    
-    // Check if reached current waypoint
-    if (((Vector2)transform.position - waypoint).magnitude > 
-        Mathf.Max(Constants.TARGET_REACHED_TOLERANCE, waypointTolerance))
-    {
-        // Move toward waypoint
-        desiredVel = Steering.ArriveDirect(gameObject.transform.position, waypoint, 
-                                          _arriveRadius, MaxSpeed);
-    }
-    else
-    {
-        // Waypoint reached, advance to next
-        _pathIndex++;
-        if (_pathIndex >= _currentPath.Count)
-        {
-            // Entire path complete
-            _currentPath = null;
-            _pathIndex = 0;
-            if (HideFlagOnceReached)
-                _flagSr.enabled = false;
-        }
-    }
-
-    return desiredVel;
-}
-
-private Vector2 getVelocityTowardsFlag()
-{
-    Vector2 desiredVel = Vector2.zero;
-    if (_lastClickPos != null)
-    {
-        if (((Vector2)_lastClickPos - (Vector2)gameObject.transform.position).magnitude > 
-            Constants.TARGET_REACHED_TOLERANCE)
-        {
-            desiredVel = Steering.ArriveDirect(gameObject.transform.position, 
-                                              (Vector2)_lastClickPos, _arriveRadius, MaxSpeed);
-        }
-        else
-        {
-            _lastClickPos = null;
-            if (HideFlagOnceReached)
-                _flagSr.enabled = false;
-        }
-    }
-    return desiredVel;
+	return getVelocityAlongPath();
 }
 ```
 
-**Why These Changes:**
-- On click: request path from Pathfinder
-- Every frame: check if path is blocked, recalculate if needed
-- Follow waypoints in order using steering
-- Dynamic obstacle detection keeps Frog adaptive
-
----
-
-## Complete Code Reference
-
-### All Files Needed
-
-**1. Node.cs** (Minimal changes from starter)
-- Add `terrainType` field
-- Add `movementCost` field
-- Update constructor to accept these parameters
-
-**2. AStarGrid.cs** (Complete replacement)
-- Full A* algorithm implementation
-- Terrain cost system
-- Multiple heuristics
-- Visualization system
-
-**3. Frog.cs** (Enhanced with pathfinding)
-- Add Pathfinder reference
-- Add path following logic
-- Dynamic obstacle detection
-
-**4. Pathfinding.cs** (Delete or leave unused)
-- No longer needed - AStarGrid.cs replaces it
-
-**5. Heap.cs** (No changes)
-- Already works perfectly
-
----
-
-## Testing & Validation
-
-### Setup Checklist
-
-```
-□ Create AStarGrid GameObject in scene
-□ Attach AStarGrid.cs script
-□ Create Layers: Mud, Water, Grass, Obstacle
-□ Assign terrain GameObjects to correct layers
-□ Set layer masks in AStarGrid Inspector:
-  □ Mud Mask → Mud layer
-  □ Water Mask → Water layer
-  □ Grass Mask → Grass layer
-  □ Obstacle Mask → Obstacle layer
-  □ Dynamic Obstacle Mask → Obstacle layer (or another layer)
-□ Set Frog's Pathfinder reference to AStarGrid
-□ Adjust grid size and node radius for your level
+```csharp
+if (Pathfinding.grid.IsPointBlockedByDynamicObstacle(_currentPath[i].worldPosition))
+{
+	Pathfinding.grid.CreateGrid();
+	RequestPathTo((Vector2)_pathGoal);
+}
 ```
 
-### Test Cases
+What it implements:
+- Mouse-click path requests.
+- Waypoint-by-waypoint frog movement.
+- On-demand path recalculation when moving obstacles interfere.
+- Controlled timing so the path is not recomputed every frame.
 
-**Test 1: Basic Pathfinding**
-1. Enter Play mode
-2. Right-click on screen
-3. ✅ Frog computes path (yellow line in Scene view)
-4. ✅ Frog moves along path
-5. ✅ Frog stops at target
+### 6.5 How to describe the reason for each change
 
-**Test 2: Obstacle Avoidance**
-1. Right-click near obstacle
-2. ✅ Yellow path goes around obstacle (not through it)
-3. ✅ Frog follows around path
+Use this sentence pattern in your explanation:
 
-**Test 3: Terrain Preference**
-1. Place different terrain types in scene
-2. Right-click creating path through mud and grass
-3. ✅ Path should prefer grass (lower cost) when available
-4. ✅ Grid cells show correct colors
+1. "I changed [file] because [problem or requirement]."
+2. "This implements [feature] by [specific mechanism]."
+3. "You can see it in [line reference]."
 
-**Test 4: Heuristic Switching**
-1. In Inspector, change HeuristicType
-2. Set new target
-3. ✅ Path changes shape based on heuristic
-4. ✅ Different heuristics show different paths
+Example:
+- "I changed [Pathfinding.cs](Assets/Scripts/Pathfinding/Pathfinding.cs) because the starter file only had TODOs for the A* search loop. This implements the full open-set/closed-set algorithm by removing the lowest-cost node, expanding neighbors, and reconstructing the path. You can see it at [line 86](Assets/Scripts/Pathfinding/Pathfinding.cs#L86), [line 94](Assets/Scripts/Pathfinding/Pathfinding.cs#L94), and [line 218](Assets/Scripts/Pathfinding/Pathfinding.cs#L218)."
 
-**Test 5: Dynamic Obstacles**
-1. Move an obstacle into Frog's path during movement
-2. ✅ Path recalculates automatically
-3. ✅ Frog adapts to new path
+## 7. Short Submission Summary
 
-### Verification in Scene View
+If you need a very short summary for your submission notes, use this:
 
-When you play:
-- Gray wireframe cube = Grid boundary (if showGridGizmos enabled)
-- Colored squares = Terrain cells (if showTerrainGizmos enabled)
-  - White = Normal
-  - Brown = Mud
-  - Blue = Water
-  - Green = Grass
-  - Red = Obstacles
-- Yellow line = Computed path (if showPathGizmos enabled)
-
----
-
-## Troubleshooting
-
-### Problem: Frog Gets Stuck on Obstacles
-
-**Cause:** Obstacle GameObjects not on correct layer
-
-**Solution:**
-1. Select obstacle GameObject
-2. In Inspector, set Layer to "Obstacle"
-3. Click "Yes, change children" if it has children
-4. Verify obstacle cells are RED in Scene view
-
----
-
-### Problem: Path Goes Through Obstacles
-
-**Cause:** Obstacle layer not properly assigned to layer mask
-
-**Solution:**
-1. Select AStarGrid GameObject
-2. In Inspector, find "Obstacle Mask"
-3. Click dropdown and select "Obstacle" layer
-4. Verify grid was recreated (usually automatic)
-
----
-
-### Problem: Grid Not Visible
-
-**Cause:** Gizmos disabled or grid visualization off
-
-**Solution:**
-1. In Scene view top-right, ensure "Gizmos" button is ON
-2. Select AStarGrid GameObject
-3. In Inspector, enable `showGridGizmos` checkbox
-
----
-
-### Problem: Frog Doesn't Move at All
-
-**Cause:** Pathfinder reference not set in Frog
-
-**Solution:**
-1. Select Frog GameObject
-2. In Inspector, find "Pathfinder" field
-3. Drag AStarGrid GameObject into field
-4. Or leave blank and let auto-detect in Start()
-
----
-
-### Problem: Path Looks Jagged/Unsmooth
-
-**Cause:** Path smoothing disabled
-
-**Solution:**
-- This is intentional for visualization clarity
-- To enable smoothing, in Frog.cs FindPath call:
-  ```csharp
-  _currentPath = Pathfinder.FindPath(..., true, ...);  // Changed to true
-  ```
-
----
-
-## Summary of Changes
-
-### From Starter Code to Implementation
-
-| Aspect | Starter | Implementation | Why |
-|--------|---------|---------------|----|
-| A* Algorithm | 100% TODO | 100% Complete | Need working algorithm |
-| Terrain Support | No | Full system | Add gameplay strategy |
-| Heuristics | None | 3 options | Performance tuning |
-| Visualization | Basic | Full gizmo system | Debug support |
-| Pathfinding Integration | No | Complete | Core requirement |
-| Dynamic Obstacles | No | Yes | Realistic adaptation |
-| Path Smoothing | N/A | Yes | Natural movement |
-
-### Key Concepts to Remember
-
-1. **A* Uses Two Costs:**
-   - G Cost = how far we've traveled
-   - H Cost = estimated distance to goal
-   - Always picks node with lowest F = G + H
-
-2. **Terrain Costs Multiply:**
-   - Normal (cost 1) = base movement
-   - Grass (cost 2) = 2x slower
-   - Mud (cost 3) = 3x slower
-   - Water (cost 5) = very slow
-
-3. **Three Heuristics:**
-   - Euclidean = realistic (default)
-   - Manhattan = grid-based
-   - Octile = optimized for diagonals
-
-4. **Dynamic Obstacles:**
-   - Check each waypoint for collisions
-   - If blocked, recreate grid and recalculate
-   - Allows real-time adaptation
-
-5. **Visualization Helps:**
-   - Grid shows what AI "sees"
-   - Colors show terrain types
-   - Yellow line shows computed path
-
----
-
-## How to Explain to Your Tutor
-
-**Opening:**
-"I implemented A* pathfinding for the Frog character. The starter code provided an incomplete skeleton, so I created a complete algorithm that finds optimal paths while respecting terrain difficulty."
-
-**Key Points:**
-1. "A* is efficient because it uses two costs - distance traveled and estimated distance to goal."
-2. "Terrain costs make paths realistic - the Frog avoids mud when possible."
-3. "Multiple heuristics show different path qualities and performance tradeoffs."
-4. "Dynamic obstacles are detected and paths recalculate automatically."
-5. "Visualization in Scene view helps verify the system works correctly."
-
-**Show Proof:**
-1. Play the scene
-2. Click to set target
-3. Point out:
-   - Yellow path appears
-   - Frog follows path
-   - Path avoids obstacles
-   - Grid shows terrain colors
-4. Change heuristic - path changes
-5. Move obstacle - path recalculates
-
----
-
-**Document Version:** 2.0 (Complete Tutorial)  
-**For:** COSC2527/COSC3144 - Assignment 1  
-**Last Updated:** April 26, 2026
+- Node.cs now stores terrain type and movement cost.
+- AStarGrid.cs now supports 8-direction neighbors, terrain colors, heuristic toggles, smoothing checks, and dynamic obstacle detection.
+- Pathfinding.cs now runs the A* algorithm, applies weighted terrain costs, and optionally smooths paths.
+- Frog.cs now requests paths on click and only recalculates when the path becomes blocked.

@@ -6,6 +6,14 @@ using UnityEngine;
 // It tracks a number of properties that we need to compute A*
 public class Node : IHeapItem<Node>
 {
+    public enum TerrainType
+    {
+        Normal,
+        Mud,
+        Water,
+        Grass
+    }
+
     // Can the node be reached (ie, no obstacle)
     public bool walkable;
 
@@ -25,20 +33,26 @@ public class Node : IHeapItem<Node>
     // Parent for this node (for reconstructing the path)
     public Node parent;
 
+    // Terrain information used by weighted A*.
+    public TerrainType terrainType;
+    public float movementCost;
+
     // For heap management
     int heapIndex;
 
-    public Node(bool _walkable, Vector2 _worldPos, int _gridX, int _gridY)
+    public Node(bool _walkable, Vector2 _worldPos, int _gridX, int _gridY, TerrainType _terrainType = TerrainType.Normal, float _movementCost = 1f)
     {
         walkable = _walkable;
         worldPosition = _worldPos;
         gridX = _gridX;
         gridY = _gridY;
+        terrainType = _terrainType;
+        movementCost = _movementCost;
     }
 
     public Node Clone()
     {
-        return new Node(walkable, worldPosition, gridX, gridY);
+        return new Node(walkable, worldPosition, gridX, gridY, terrainType, movementCost);
     }
 
     public float fCost

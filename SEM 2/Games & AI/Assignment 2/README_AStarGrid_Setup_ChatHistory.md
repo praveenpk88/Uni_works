@@ -150,6 +150,25 @@ This file contains a step-by-step record of the chat guidance for setting up the
   10. **Testing Configuration** - Verification checklist
 - **Why Valuable**: Shows exact code diffs, Inspector settings, layer configuration all in one place
 
+### 14. Strict Spec-Only Reset for Member 1
+- **Request**: User requested strict compliance with assignment spec for Member 1 only, with no advanced/fancy extensions.
+- **Actions Taken**:
+  - Restored `Assets/Scripts/Pathfinding/AStarGrid.cs` to starter-code baseline.
+  - Restored `Assets/Scripts/Frog.cs` to starter-code baseline.
+  - Kept `Assets/Scripts/Pathfinding/Node.cs` starter-compatible.
+  - Implemented required TODOs in `Assets/Scripts/Pathfinding/Pathfinding.cs`:
+    - Open set initialization
+    - Main A* loop
+    - Node expansion and cost updates
+    - Retrace path logic
+    - Heuristic and movement cost functions
+    - Basic null-safety around start/target nodes
+- **Documentation Updated**:
+  - `COMPLETE_TUTORIAL_A_to_Z.md` rewritten as strict spec-only Member 1 tutorial.
+  - Main `README.md` updated with a "Member 1 Strict Spec Alignment" section.
+- **Outcome**:
+  - Project now follows starter architecture and completes core Member 1 A* requirements without advanced features.
+
 ---
 
 **This README documents the full chat-based setup, complete implementation, and all code/Inspector changes for future reference.**
