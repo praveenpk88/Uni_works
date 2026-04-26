@@ -50,7 +50,12 @@ public class AStarGrid : MonoBehaviour
     {
         Euclidean,
         Manhattan,
-        Octile
+        Octile,
+        // Custom admissible heuristic: Chebyshev distance.
+        // Returns max(dx, dy) — the fewest moves needed if every step were free.
+        // Always admissible because max(dx,dy) <= actual path cost for 8-direction movement.
+        // Less informed than Euclidean so A* explores more nodes, which is visible in gizmos.
+        Chebyshev
     }
 
     Node[,] grid;
@@ -164,10 +169,24 @@ public class AStarGrid : MonoBehaviour
                 int checkX = node.gridX + x;
                 int checkY = node.gridY + y;
 
-                if (InBounds(checkX, checkY))
+                if (!InBounds(checkX, checkY))
                 {
-                    neighbours.Add(grid[checkX, checkY]);
+                    continue;
                 }
+
+                // Prevent diagonal moves that clip an obstacle corner.
+                // Both orthogonal neighbours of a diagonal step must be walkable.
+                if (Mathf.Abs(x) == 1 && Mathf.Abs(y) == 1)
+                {
+                    bool hWalkable = InBounds(node.gridX + x, node.gridY) && grid[node.gridX + x, node.gridY].walkable;
+                    bool vWalkable = InBounds(node.gridX, node.gridY + y) && grid[node.gridX, node.gridY + y].walkable;
+                    if (!hWalkable || !vWalkable)
+                    {
+                        continue;
+                    }
+                }
+
+                neighbours.Add(grid[checkX, checkY]);
             }
         }
 
@@ -187,6 +206,13 @@ public class AStarGrid : MonoBehaviour
                 float diagonal = Mathf.Min(dx, dy);
                 float straight = Mathf.Max(dx, dy) - diagonal;
                 return diagonal * Mathf.Sqrt(2f) + straight;
+            case PathHeuristic.Chebyshev:
+                // max(dx, dy) — the number of moves needed if we could go in any direction for free.
+                // Admissible: the cheapest possible move costs 1.0, and we need at least max(dx,dy)
+                // moves, so max(dx,dy) * 1.0 never exceeds the actual cost.
+                // Because it underestimates more than Euclidean, A* expands more nodes and you
+                // can visually see the wider search frontier in the gizmos.
+                return Mathf.Max(dx, dy);
             default:
                 return Mathf.Sqrt(dx * dx + dy * dy);
         }

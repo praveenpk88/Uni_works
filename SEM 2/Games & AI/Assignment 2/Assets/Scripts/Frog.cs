@@ -47,10 +47,10 @@ public class Frog : MonoBehaviour
     public Vector2 AnchorDims;
 
     [Header("A* Movement")]
-    public float waypointTolerance = 0.2f;
-    public float dynamicRepathInterval = 0.2f;
+    public float waypointTolerance = 0.5f;
+    public float dynamicRepathInterval = 0.3f;
     public bool drawPathDebugLines = true;
-    public bool allowDirectFallbackWhenNoPath = true;
+    public bool allowDirectFallbackWhenNoPath = false;
 
     private Node[] _currentPath;
     private int _pathIndex;
@@ -217,8 +217,14 @@ public class Frog : MonoBehaviour
             Debug.DrawLine(transform.position, currentWaypoint, Color.yellow);
         }
 
+        bool isFinalWaypoint = (_pathIndex == _currentPath.Length - 1);
         float distanceToWaypoint = ((Vector2)transform.position - currentWaypoint).magnitude;
-        if (distanceToWaypoint <= waypointTolerance)
+
+        // For the final waypoint, also accept arrival if the frog has slowed to nearly a stop
+        // nearby — physics against a wall can prevent reaching the exact node centre.
+        bool arrivedAtFinal = isFinalWaypoint && distanceToWaypoint <= _arriveRadius * 0.15f;
+
+        if (distanceToWaypoint <= waypointTolerance || arrivedAtFinal)
         {
             _pathIndex++;
             if (_pathIndex >= _currentPath.Length)
@@ -238,19 +244,17 @@ public class Frog : MonoBehaviour
             currentWaypoint = _currentPath[_pathIndex].worldPosition;
         }
 
-        return Steering.ArriveDirect(gameObject.transform.position, currentWaypoint, _arriveRadius, MaxSpeed);
+        // Use Seek (full speed) for intermediate waypoints so the frog moves naturally.
+        // Only slow down with Arrive on the final waypoint.
+        if (isFinalWaypoint)
+            return Steering.ArriveDirect(gameObject.transform.position, currentWaypoint, _arriveRadius, MaxSpeed);
+        else
+            return Steering.SeekDirect(gameObject.transform.position, currentWaypoint, MaxSpeed);
     }
 
     private void RequestPathTo(Vector2 destination)
     {
         Node[] path = Pathfinding.RequestPath(transform.position, destination);
-
-        // Retry once with a fresh grid in case scene objects moved since the last build.
-        if ((path == null || path.Length == 0) && Pathfinding.grid != null)
-        {
-            Pathfinding.grid.CreateGrid();
-            path = Pathfinding.RequestPath(transform.position, destination);
-        }
 
         if (path != null && path.Length > 0)
         {
@@ -288,7 +292,6 @@ public class Frog : MonoBehaviour
         {
             if (Pathfinding.grid.IsPointBlockedByDynamicObstacle(_currentPath[i].worldPosition))
             {
-                Pathfinding.grid.CreateGrid();
                 RequestPathTo((Vector2)_pathGoal);
                 break;
             }

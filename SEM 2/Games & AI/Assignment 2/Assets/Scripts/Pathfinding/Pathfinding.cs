@@ -139,8 +139,8 @@ public class Pathfinding : MonoBehaviour
                     List<Node> neighbours = grid.GetNeighbours(currentNode);
                     foreach (Node node in neighbours)
                     {
-                        // TODO:If we can reach the neighbour and it is not in the closed set (repalce false)
-                        if (node.walkable && !closedSet.Contains(node))
+                        // Skip nodes that are statically blocked, already visited, or blocked by a moving obstacle.
+                        if (node.walkable && !closedSet.Contains(node) && !grid.IsPointBlockedByDynamicObstacle(node.worldPosition))
                         {
                             // TODO: Calculate the G Cost of the neighbour node
                             float newCostToNeighbour = currentNode.gCost + GCost(currentNode, node);
