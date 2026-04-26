@@ -58,6 +58,98 @@ This file contains a step-by-step record of the chat guidance for setting up the
   - Field must be public or marked with [SerializeField].
 - User asked if this troubleshooting was saved in the README.
 
+### 11. Comprehensive Implementation Guide Created
+- **Request**: User requested a complete A-to-Z guide explaining all changes from startup code to current implementation
+- **Requirements**:
+  - Explain what was in the starter code
+  - Document all changes made for Assignment 1
+  - For each change: what changed, why, specific code, expression/logic, impact on game
+  - Make it clear enough for tutors to understand
+- **Deliverable**: 
+  - **File**: `IMPLEMENTATION_GUIDE_Assignment1.md` (NEW FILE)
+  - **Content**: 
+    - Overview of assignment requirements
+    - Starter code vs implementation comparison
+    - 8 major changes with detailed explanations:
+      1. A* Algorithm Implementation
+      2. Terrain Cost System
+      3. Multiple Heuristic Options
+      4. Dynamic Obstacle Detection & Recalculation
+      5. Path Smoothing
+      6. Frog Integration & Pathfinding Movement
+      7. Gizmo Visualization System
+      8. Layer Mask System for Terrain
+    - File-by-file breakdown with tables
+    - Complete flow diagram (10 steps)
+    - Design decisions & rationale
+    - Testing & validation checklist
+    - Performance considerations
+    - Troubleshooting guide
+    - How to explain to tutors
+    - Complete code snippets for each major component
+  - **Purpose**: Provides tutors with full clarity on implementation decisions and impacts
+
+### 12. Complete A-Z Tutorial Created for Beginners
+- **Request**: User asked to examine starter code folder, compare with current implementation, identify all recent changes, and create a comprehensive tutorial README
+- **Key Requirement**: README must be Year 2 beginner-friendly so anyone without prior knowledge can implement everything correctly
+- **Research Process**:
+  - Located starter code in: `SEM 2/GAMES & AI/starter Code/`
+  - Compared starter files:
+    - Pathfinding.cs (incomplete skeleton with 100% TODOs)
+    - AStarGrid.cs (basic grid, no terrain/heuristics)
+    - Node.cs (basic node class)
+    - Frog.cs (no pathfinding integration)
+  - Identified all major changes and implementations
+- **Deliverable**: `COMPLETE_TUTORIAL_A_to_Z.md` (Comprehensive beginner tutorial)
+- **Content Structure**:
+  1. **What You're Building** - Clear overview
+  2. **Starter Code Analysis** - Compared side-by-side with current
+  3. **Understanding A* Algorithm** - Explained simply with visuals
+  4. **Step-by-Step Implementation** (3 Main Steps):
+     - Step 1: Enhance Node.cs (add terrain fields)
+     - Step 2: Replace AStarGrid.cs (complete rewrite - 400+ lines with comments)
+     - Step 3: Enhance Frog.cs (pathfinding integration)
+  5. **COMPLETE CODE** - All working code ready to copy/paste
+  6. **Testing & Validation** - Setup checklist, 5 test cases, verification guide
+  7. **Troubleshooting** - 5 common problems with solutions
+  8. **Summary** - Comparison table and tutor explanation guide
+- **Key Advantage**: Complete beginner can follow this tutorial and build exact same system
+
+### 13. Detailed File-by-File Code Changes & Inspector Configuration Document
+- **Request**: Compare Unity files (code and Inspector settings) between starter code and current implementation
+- **Process**:
+  - Read all starter code files completely (Pathfinding.cs, AStarGrid.cs, Node.cs, Frog.cs)
+  - Read all current implementation files
+  - Compared side-by-side for every change
+  - Captured Inspector configuration requirements
+- **Deliverable**: `INSPECTOR_AND_CODE_CHANGES.md` (Technical reference)
+- **Content Structure**:
+  1. **Files Modified Overview** - What changed, what didn't
+  2. **Node.cs Changes** - Field additions (terrainType, movementCost) with before/after code
+  3. **AStarGrid.cs Changes** - Complete replacement documented:
+     - 7 critical code changes with snippets
+     - Configuration from 6 fields to 25+ fields
+     - New methods: FindPath(), SmoothPath(), GetHeuristic(), etc.
+     - Line count: ~130 → ~420 lines
+  4. **Frog.cs Changes** - Pathfinding integration:
+     - 4 new fields added
+     - Start() initialization code
+     - Update() click handling and obstacle detection
+     - 2 new methods: getVelocityAlongPath(), getVelocityTowardsFlag()
+     - ~58 lines of additions
+  5. **Pathfinding.cs Status** - Explained why left incomplete (bypassed by AStarGrid)
+  6. **Inspector Configuration** - 5 sections with exact field descriptions:
+     - Gizmo/Debug Visualization (3 toggles)
+     - Terrain System (4 terrain costs)
+     - Terrain Detection (5 layer masks)
+     - Grid Settings (3 settings)
+     - A* Heuristic (dropdown with 3 options)
+  7. **Scene Setup** - Layers to create, GameObjects and their layers
+  8. **Summary Table** - All changes at a glance
+  9. **Quick Reference** - Where to find each feature
+  10. **Testing Configuration** - Verification checklist
+- **Why Valuable**: Shows exact code diffs, Inspector settings, layer configuration all in one place
+
 ---
 
-**This README documents the full chat-based setup process for future reference.**
+**This README documents the full chat-based setup, complete implementation, and all code/Inspector changes for future reference.**
